@@ -1,0 +1,272 @@
+---
+title: "MAS 812:Non-Parametric Methods"
+author: "Gift Pamba"
+subtitle: "continued"
+date: "MSC/MAT/00098/024"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(rmarkdown)
+library(tidyverse)
+library(DescTools)
+library(coin)
+library(randtests)
+
+```
+
+
+
+# EXERCISE 11.6
+Generate data for three groups with distributions:
+
++ Group 1: Normal(0,1)
++ Group 2: Normal(0.5, 1)
++ Group 3: Normal(1,1)
+
+with *n=10* per group.
+
+## A. Perform a one-way ANOVA, Kruskal-Wallis and median test
+
+### i. ANOVA
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+
+set.seed(123)
+
+grp1 <- rnorm(10, 0, 1)
+grp2 <- rnorm(10, 0.5, 1)
+grp3 <- rnorm(10, 1, 1)
+
+
+grp <- factor(
+  x = c(rep("grp1", length(grp1)), rep("grp2", length(grp2)),   
+        rep("grp3",length(grp3))
+        )
+              )
+
+aov_df <- data.frame("grp" = grp,
+                     "obsvtn" = c(grp1, grp2, grp3)
+                    )
+# One way ANOVA
+aov1 <- aov(data = aov_df, formula = obsvtn~grp)
+aov1_summary <- summary(aov1)
+
+# ANOVA p-value
+aov1_pvalue <- aov1_summary[[1]]["grp", "Pr(>F)"] |> round(4)
+
+cat(
+  paste0("One-way ANOVA","\n",
+         "p-value: ", aov1_pvalue,"\n",
+         "Decision: ", ifelse(aov1_pvalue < 0.05, yes = "Reject the null 
+                             hypothesis", no = "Fail to reject the null hypothesis")
+         )
+)
+```
+
+### ii. Kruskal-Wallis
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+# Kruskal-Wallis test
+kw <- kruskal.test(data = aov_df, obsvtn~grp)
+
+# Kruskal-Wallis p-value
+kw_pvalue <- round(kw$p.value, 4)
+
+cat(
+  paste0("Kruskal-Wallis test","\n",
+         "p-value: ", kw_pvalue,"\n",
+         "Decision: ", ifelse(kw_pvalue < 0.05, yes = "Reject the null 
+                             hypothesis", no = "Fail to reject the null hypothesis")
+         )
+)
+
+```
+
+
+### iii. Median test
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+# Median test
+mt <- median_test(obsvtn~grp, data = aov_df)
+
+# Median test p-value
+mt_pvalue <- pvalue(mt) |> round(4)
+
+cat(
+  paste0("Median test","\n",
+         "p-value: ", mt_pvalue,"\n",
+         "Decision: ", ifelse(mt_pvalue < 0.05, yes = "Reject the null 
+                             hypothesis", no = "Fail to reject the null hypothesis")
+         )
+)
+```
+
+
+
+### iv. Conclusion
+For all the three tests, we fail to reject the null hypotheses. There is sufficient evidence in favor of the initial claim of an insignificant difference between the three groups at 5% level. 
+
+## B. Repeat 1000 times and compute empirical power for each test
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+set.seed(314)
+
+# Number of simulations
+simulations <- 1000
+
+# Sample size per group
+n_i <- 10 
+
+# Significance level
+alpha <- 0.05
+
+# p-value storage
+anova_pvalue <- numeric(simulations)
+kw_pvalue <- numeric(simulations)
+median_pvalue <- numeric(simulations)
+
+
+for(i in 1:simulations){
+  
+  # Data generation
+  g1 <- rnorm(n_i,0,1)
+  g2 <- rnorm(n_i,0.5,1)
+  g3 <- rnorm(n_i,1,1)
+  
+  observations <- c(g1,g2,g3)
+  group <- rep(c("g1", "g2", "g3"), each = n_i) |> factor()
+  
+  sim_df <- data.frame(group, observations)
+  
+  # 1. One-way ANOVA
+  aov_sim <- aov(observations~group, data = sim_df)
+  anova_pvalue[i] <- summary(aov_sim)[[1]][["Pr(>F)"]][1] |> round(4)
+  
+  # 2. Kruskal-Wallis
+  kw_sim <- kruskal.test(observations~group, data = sim_df)
+  kw_pvalue[i] <- kw_sim$p.value |> round(4)
+  
+  # 3. Median test
+  mt_sim <- median_test(observations~group, data = sim_df)
+  median_pvalue[i] <- pvalue(mt_sim) |> round(4)
+  
+}
+
+# Empirical power
+aov_power <- mean(anova_pvalue < alpha)
+kw_power <- mean(kw_pvalue < alpha)
+median_power <- mean(median_pvalue < alpha)
+
+cat(
+  paste0("Empirical power - Normal values","\n",
+         "One-way ANOVA: ",aov_power, "\n",
+         "Kruskal Wallis test: ",kw_power, "\n",
+         "Median Test: ",median_power)
+)
+
+```
+
+
+## C. Repeat with Cauchy distributions (heavy-tailed) and compare
+
+For this simulation, I use the  following Cauchy distributions with 10 observations each;
+
++ Cauchy(location = 0, scale = 1)
++ Cauchy(location = 0.5, scale = 1)
++ Cauchy(location = 1, scale = 1)
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+set.seed(377)
+
+# p-value storage
+anova_pvalue2 <- numeric(simulations)
+kw_pvalue2 <- numeric(simulations)
+median_pvalue2 <- numeric(simulations)
+
+for(i in 1:simulations){
+  
+  # Data generation
+  G1 <- rcauchy(n_i, location = 0, scale = 1)
+  G2 <- rcauchy(n_i, location = 0.5, scale = 1)
+  G3 <- rcauchy(n_i, location = 1, scale = 1)
+  
+  observations2 <- c(G1,G2,G3)
+  group2 <- rep(c("G1", "G2", "G3"), each = n_i) |> factor()
+  
+  sim_df2 <- data.frame(group2, observations2)
+  
+  # 1. One-way ANOVA
+  aov_sim2 <- aov(observations2~group2, data = sim_df2)
+  anova_pvalue2[i] <- summary(aov_sim2)[[1]][["Pr(>F)"]][1] |> round(4)
+  
+  # 2. Kruskal-Wallis
+  kw_sim2 <- kruskal.test(observations2~group2, data = sim_df2)
+  kw_pvalue2[i] <- kw_sim2$p.value |> round(4)
+  
+  # 3. Median test
+  mt_sim2 <- median_test(observations2~group2, data = sim_df2)
+  median_pvalue2[i] <- pvalue(mt_sim2) |> round(4)
+  
+}
+
+# Empirical power
+aov_power2 <- mean(anova_pvalue2 < alpha)
+kw_power2 <- mean(kw_pvalue2 < alpha)
+median_power2 <- mean(median_pvalue2 < alpha)
+
+cat(
+  paste0("Empirical power - Cauchy values","\n",
+         "One-way ANOVA: ",aov_power2, "\n",
+         "Kruskal Wallis test: ",kw_power2, "\n",
+         "Median Test: ",median_power2)
+)
+
+norm_cauchy_comparison <- data.frame(
+  "Normal" = c(aov_power, kw_power, median_power),
+  "Cauchy" = c(aov_power2, kw_power2, median_power2),
+  row.names = c("One-way ANOVA", "Kruskal-Wallis test", "Median test")
+)
+
+norm_cauchy_comparison |> kable(format = "simple")
+
+```
+
+
+
+
+## D. What do you conclude about the relative power of these tests?
+
+The One-way ANOVA test is robust for normally distribted observations with equal variances. However, it's power is greatly affected by outliers as shown by it's power when it tests heavily tailed distributions.
+
+The Kruskal Wallis test is less powerful than the One-way ANOVA test when dealing with symmetrically distributed data. However, it is a better alternative if the observations are riddled with outliers.
+
+The median test possesses the least power in comparison to the two tests. This is due to the information loss attributed to the convertion of continuous observations to qualitative frequencies based on the median value.
+
+
+# EXERCISE 11.7
+
+## A. Why is it important to follow a significant Kruskal-Wallis test with post-hoc comparisons rather than simply reporting the omnibus result?
+Significant Kruskal-Wallis test reporting is vague in nature. Post-hoc comparisons solve this by pinpointing the pairwise groups that differ significantly.
+
+## B. Explain the difference between the Kruskal-Wallis test and the Friedman test in terms of design and assumptions
+In terms of design, observations from different samples under the Kruskal-Wallis test are independent of each other whereas under the Friedman test observations are of repeated measures.
+Under the Kruskal-Wallis test ranking is conducted across all the samples while for the Friedman test, ranking is done within each block/participant. 
+
+## C. Under what circumstances would you choose the Jonckheere-Terpstra test over the Kruskal-Wallis test?
+
+The Jonckheere-Terpstra test would be appropriate if the researcher is interested in discovering an ordered difference amongst the groups under investigation. 
+
+## D. What is the purpose of Bonferroni correction in post-hoc analysis, and what is its limitation?
+
+Bonferroni correction identifies significant pairwise differences present between quantitative values obtained from different or similar populations.
+
+**Limitation**: The correction may overlook significant pairwise differences due to a reduced margin of error attributed to an increase in the number of samples under comparison. 
+
+## E. Why is the median test generally less powerful than the Kruskal-Wallis test for detecting location differences?
+
+Under the median test, quantitative observations are converted to frequency values less or above the overall median value, while the Kruskal-Wallis test makes use of the observations' ranks. This information loss makes the median test a less powerful alternative to the Kruskal-Wallis test for detecting location differences.   
+
+
+

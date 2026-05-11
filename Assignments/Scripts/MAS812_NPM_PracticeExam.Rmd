@@ -99,6 +99,10 @@ A researcher wants to test whether the median waiting time(in minutes) at a clin
 |-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
 | 18  | 22  | 15  | 19  | 25  | 16  | 21  | 14  | 17  | 23  | 24  | 13  |
 
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+clinic_waiting <- c(18,22,15,19,25,16,21,14,17,23,24,13)
+```
+
 ## A
 
 Perform the **sign test** at $\alpha = 0.05$. State your hypotheses clearly.
@@ -115,8 +119,20 @@ Compare the results of the two tests. Which test is more appropriate for these d
 
 A study compares the effectiveness of two different diets on weight loss (in kg). The results are:
 
--   **Diet A**: 4.2,5.1,3.8,6.0,4.5,5.5,4.9,3.5
--   **Diet B**: 2.5,3.2,2.8,4.0,3.0,3.5,2.2,2.9,3.1
+|            |     |     |     |     |     |     |     |     |     |
+|------------|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+| **Diet A** | 4.2 | 5.1 | 3.8 | 6.0 | 4.5 | 5.5 | 4.9 | 3.5 |     |
+| **Diet B** | 2.5 | 3.2 | 2.8 | 4.0 | 3.0 | 3.5 | 2.2 | 2.9 | 3.1 |
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+weightloss <- data.frame(
+  diet = c(rep("A",8), rep("B",9)),
+  weight = c(4.2,5.1,3.8,6,4.5,5.5,4.9,3.5,
+           2.5,3.2,2.8,4,3,3.5,2.2,2.9,3.1
+  )
+)
+
+```
 
 ## A
 
@@ -132,11 +148,23 @@ Perform a **Kolmogorov-Smirnov two-sample test** at $\alpha = 0.05$.
 
 # FOUR
 
-A reseacher compares the efectiveness of three different teaching methods on test scores. Students are randomly assigned to one of the three methods, and their scores are recorded.
+A researcher compares the effectiveness of three different teaching methods on test scores. Students are randomly assigned to one of the three methods, and their scores are recorded.
 
--   Method A: 78,82,75,80,77,81,79,76
--   Method B: 68,72,65,70,67,71,69,66
--   Method C: 85,88,82,87,84,86,83,81
+|              |     |     |     |     |     |     |     |     |
+|--------------|-----|-----|-----|-----|-----|-----|-----|-----|
+| **Method A** | 78  | 82  | 75  | 80  | 77  | 81  | 79  | 76  |
+| **Method B** | 68  | 72  | 65  | 70  | 67  | 71  | 69  | 66  |
+| **Method C** | 85  | 88  | 82  | 87  | 84  | 86  | 83  | 81  |
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+teaching <- data.frame(
+  method = rep(c("A","B","C"), each = 8),
+  score = c(78,82,75,80,77,81,79,76,
+           68,72,65,70,67,71,69,66,
+           85,88,82,87,84,86,83,81)
+)
+
+```
 
 ## A
 
@@ -152,9 +180,22 @@ Conduct **post-hoc pairwise comparisons** using the Dunn's test with Bonferroni 
 
 A study measuring the reaction times (in milliseconds) for 6 subjects under three different lighting conditions in a repeated measures design:
 
--   **Dim light**: 250,265,258,272,248,260
--   **Normal light**: 235,248,240,255,232,245
--   **Bright light**: 220,232,225,238,218,228
+|                   |     |     |     |     |     |     |
+|-------------------|-----|-----|-----|-----|-----|-----|
+| **Subject**       | 1   | 2   | 3   | 4   | 5   | 6   |
+| **Dim light**     | 250 | 265 | 258 | 272 | 248 | 260 |
+| **Normal light**  | 235 | 248 | 240 | 255 | 232 | 245 |
+| **Bright light**  | 220 | 232 | 225 | 238 | 218 | 228 |
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+light <- data.frame(
+  subject = rep(1:6, each = 3),
+  intensity = rep(c("dim", "normal", "bright"), 3),
+  time = c(250, 235, 220, 265, 248, 232,
+           258, 240, 225, 272, 255, 238,
+           248, 232, 218, 260, 245, 228)
+)
+```
 
 ### a
 

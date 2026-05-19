@@ -6,6 +6,7 @@ output:
   html_document:
     df_print: paged
   word_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -87,9 +88,9 @@ if(length(outliers) > 0){
 
 
 
-# cat(
-#   paste0("[", l, ", ", q, "]")
-#   )
+cat(
+  paste0("[", l, ", ", q, "]")
+  )
 
 ```
 
@@ -105,17 +106,54 @@ A researcher wants to test whether the median waiting time(in minutes) at a clin
 clinic_waiting <- c(18,22,15,19,25,16,21,14,17,23,24,13)
 ```
 
+
+$${H}_{0}: The\ median\ waiting\ time\ at\ the\ clinic\ is\ 20\ minutes\ \\
+{H}_{1}: The\ median\ waiting\ time\ is\ less\ than\ 20\ minutes\ $$
+
 ## A
 
 Perform the **sign test** at $\alpha = 0.05$. State your hypotheses clearly.
+
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+cw_sign <- SignTest(x = clinic_waiting,
+                    alternative = "less",
+                    mu = 20)
+
+cat(
+  paste0("Sign-test", "\n",
+         "p-value: ", round(cw_sign$p.value, 4), "\n",
+         "Decision: ", ifelse(cw_sign$p.value<0.05, 
+                              yes = "Reject the null hypothesis",
+                              no = "Fail to reject the null hypothesis"))
+)
+```
+The sample data is in favor of the initial claim that the median waiting time at the clinic is twenty minutes.
+
 
 ## B
 
 Perform the **Wilcoxon-signed rank test** at $\alpha = 0.05$.
 
+```{r, echo = FALSE, warning = FALSE, warning = FALSE}
+cw_wsr <- wilcox.test(x = clinic_waiting,
+                    alternative = "less",
+                    mu = 20)
+cat(
+  paste0("wilcoxon signed-rank test", "\n",
+         "p-value: ", round(cw_wsr$p.value, 4), "\n",
+         "Decision: ", ifelse(cw_wsr$p.value<0.05,
+                              yes = "Reject the null hypothesis",
+                              no = "Fail to reject the null hypothesis"))
+)
+```
+The sample data is in favor of the initial claim that the median waiting time at the clinic is twenty minutes.
+
 ## C
 
 Compare the results of the two tests. Which test is more appropriate for these data and why?
+
+**Both results are in favor of the null hypothesis that the median waiting time at the clinic is 20 minutes. The Wilcoxon signed-rank test is more appropriate for this data as it is more robust.**
 
 # THREE
 
@@ -140,13 +178,79 @@ weightloss <- data.frame(
 
 Perform a **Wilcoxon rank-sum test** at $\alpha = 0.05$ to determine if the diets differ in weight loss.
 
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+wloss_wrs <- wilcox.test(x = weightloss[weightloss$diet == "A",2],
+                         y = weightloss[weightloss$diet == "B",2],
+                         paired = FALSE)
+
+cat(
+  paste0("Willcoxon rank sum test", "\n",
+         "p-value: ", round(wloss_wrs$p.value, 4), "\n",
+         "Decision: ", ifelse(wloss_wrs$p.value<0.05, 
+                              yes = "Reject the null hypothesis",
+                              no = "Fail to reject the null hypothesis"))
+)
+```
+
+
 ## B
 
 Perform a **median test** (Mood's median test) at $\alpha = 0.05$ for the same data.
 
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+median_weightloss <- median(weightloss$weight)
+
+# Diet A-Below median 
+A_below_median <- weightloss[weightloss$diet == "A" & weightloss$weight < median_weightloss ,2] |> length()
+
+# Diet A-Above median 
+A_above_median <- weightloss[weightloss$diet == "A" & weightloss$weight > median_weightloss ,2] |> length()
+
+# Diet B-Below median 
+B_below_median <- weightloss[weightloss$diet == "B" & weightloss$weight < median_weightloss ,2] |> length()
+
+# Diet B-Above median 
+B_above_median <- weightloss[weightloss$diet == "B" & weightloss$weight > median_weightloss ,2] |> length()
+
+# Mood's weight-loss matrix
+wl_matrix <- matrix(
+  c(A_below_median, B_below_median,
+    A_above_median, B_above_median), nrow = 2, byrow = TRUE,
+  dimnames = list(c("below median", "above median"),
+                  "diet" = c("A", "B"))
+)
+
+# Chi calculated
+median_calc <- (sum(wl_matrix)*(A_below_median*B_above_median - B_below_median*A_above_median)^2)/(sum(wl_matrix[1,])*sum(wl_matrix[2,])*sum(wl_matrix[,1])*sum(wl_matrix[,2]))
+
+# Critical value
+chi_critical <- qchisq(p = 0.95, df = 1)
+
+cat(
+  paste0("Mood's median test","\n",
+         "Chi-square calculated: ",round(median_calc, 4), "\n",
+         "Chi-square critical: ", round(chi_critical, 4), "\n",
+         "Decision: ", ifelse(median_calc>chi_critical,
+                              yes = "Reject the null hypothesis",
+                              no = "Fail to reject the null hypothesis"))
+)
+
+```
+
+
+In conclusion, there is sufficient evidence in favor of the alternative hypothesis that both diets A and B differ significantly at the 5% level  
+
 ## C
 
 Perform a **Kolmogorov-Smirnov two-sample test** at $\alpha = 0.05$.
+
+```{r}
+wl_ks <- ks.test(x = weightloss[weightloss$diet == "A",2],
+                 y = weightloss[weightloss$diet == "B",2],
+                 alternative = "two.sided")
+
+```
+
 
 # FOUR
 
@@ -241,7 +345,7 @@ cat(
 )
 ```
 
-The sampled obervations show that that the reaction times under the three lighting conditions differ significantly with a 5% margin of error.
+The sampled observations show that that the reaction times under the three lighting conditions differ significantly with a 5% margin of error.
 
 ### b
 

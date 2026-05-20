@@ -1,0 +1,426 @@
+---
+title: "MAS 812: Non-parametric methods"
+author: "Gift Pamba"
+date: "2026-04-29"
+output:
+  html_document:
+    df_print: paged
+    theme: cosmo        
+    highlight: tango
+    toc: true            
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(DescTools)
+library(kableExtra)
+
+```
+
+# ONE
+
+A researcher collects the following data set representing the body mass index (BMI) measurements of participants in a health study
+
+|      |      |      |      |      |      |      |      |      |      |      |      |      |      |      |
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+| 22.5 | 24.1 | 28.3 | 26.7 | 23.8 | 31.2 | 29.5 | 25.4 | 27.9 | 33.6 | 24.8 | 30.1 | 26.3 | 21.9 | 34.2 |
+
+## A
+
+Compute the **order statistics** for this data set.
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+# Order observations in ascending order
+bmi <- c(22.5, 24.1, 28.3, 26.7, 23.8, 
+         31.2, 29.5, 25.4, 27.9, 33.6,
+         24.8, 30.1, 26.3, 21.9, 34.2)
+
+cat("Order statistics: ","\n",
+  paste0(
+    sort(x = bmi, decreasing = FALSE)
+  )
+)
+```
+
+## B
+
+Find the **median**, **first quartile**(Q1), and **third quartile**(Q3), using the order statistics
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+
+q1 <- quantile(bmi, probs = 0.25)
+q3 <- quantile(bmi, probs = 0.75)
+
+
+cat(
+  paste0("Median: ", median(bmi), "\n",
+         "First quartile: ", q1, "\n",
+         "Third quartile: ", q3)
+)
+
+```
+
+## C
+
+Calculate the **interquartile range(IQR)** and identify any potential outliers using the 1.5\*IQR rule
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+
+iqr <- IQR(bmi)
+
+cat(
+  paste0("Interquartile range (IQR): ", iqr, "\n", "\n", "outliers:", "\n")
+)
+
+# outlier lower bound
+l <- q1 - 1.5*iqr
+
+# outlier upper bound
+q <- q3 + 1.5*iqr
+
+# Outlier detection
+outliers <- bmi[bmi>=q | bmi<=l]
+
+if(length(outliers) > 0){
+  cat(paste(outliers))
+}else{
+  cat(paste0("There are no outliers!"))
+}
+
+# 
+# cat(
+#   paste0("[", l, ", ", q, "]")
+#   )
+
+```
+
+# TWO
+
+A researcher wants to test whether the median waiting time*(in minutes)* at a clinic is less than 20 minutes. A sample of 12 patients yields the following waiting times:
+
+|     |     |     |     |     |     |     |     |     |     |     |     |
+|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+| 18  | 22  | 15  | 19  | 25  | 16  | 21  | 14  | 17  | 23  | 24  | 13  |
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+clinic_waiting <- c(18,22,15,19,25,16,21,14,17,23,24,13)
+```
+
+
+$${H}_{0}: The\ median\ waiting\ time\ at\ the\ clinic\ is\ 20\ minutes\ \\
+{H}_{1}: The\ median\ waiting\ time\ is\ less\ than\ 20\ minutes\ $$
+
+## A
+
+Perform the **sign test** at $\alpha = 0.05$. State your hypotheses clearly.
+
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+cw_sign <- SignTest(x = clinic_waiting,
+                    alternative = "less",
+                    mu = 20)
+
+cat(
+  paste0("Sign-test", "\n",
+         "p-value: ", round(cw_sign$p.value, 4), "\n",
+         "Decision: ", ifelse(cw_sign$p.value<0.05, 
+                              yes = "Reject the null hypothesis",
+                              no = "Fail to reject the null hypothesis"))
+)
+```
+> The sample data is in favor of the initial claim that the median waiting time at the clinic is twenty minutes.
+
+
+## B
+
+Perform the **Wilcoxon-signed rank test** at $\alpha = 0.05$.
+
+```{r, echo = FALSE, warning = FALSE, warning = FALSE}
+cw_wsr <- wilcox.test(x = clinic_waiting,
+                    alternative = "less",
+                    mu = 20)
+cat(
+  paste0("wilcoxon signed-rank test", "\n",
+         "p-value: ", round(cw_wsr$p.value, 4), "\n",
+         "Decision: ", ifelse(cw_wsr$p.value<0.05,
+                              yes = "Reject the null hypothesis",
+                              no = "Fail to reject the null hypothesis"))
+)
+```
+> The sample data is in favor of the initial claim that the median waiting time at the clinic is twenty minutes.
+
+## C
+
+Compare the results of the two tests. Which test is more appropriate for these data and why?
+
+> Both results are in favor of the null hypothesis that the median waiting time at the clinic is 20 minutes. The Wilcoxon signed-rank test is more appropriate for this data as it is more robust.
+
+# THREE
+
+A study compares the effectiveness of two different diets on weight loss (in kg). The results are:
+
+|            |     |     |     |     |     |     |     |     |     |
+|------------|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+| **Diet A** | 4.2 | 5.1 | 3.8 | 6.0 | 4.5 | 5.5 | 4.9 | 3.5 |     |
+| **Diet B** | 2.5 | 3.2 | 2.8 | 4.0 | 3.0 | 3.5 | 2.2 | 2.9 | 3.1 |
+
+
+
+$${H}_{0}: The\ median\ weight\ loss\ for\ both\ diets\ is\ the\ same\ \\
+{H}_{1}:The\ median\ weight\ loss\ from\ both\ diets\ is\ different\ $$
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+weightloss <- data.frame(
+  diet = c(rep("A",8), rep("B",9)),
+  weight = c(4.2,5.1,3.8,6,4.5,5.5,4.9,3.5,
+           2.5,3.2,2.8,4,3,3.5,2.2,2.9,3.1
+  )
+)
+
+```
+
+## A
+
+Perform a **Wilcoxon rank-sum test** at $\alpha = 0.05$ to determine if the diets differ in weight loss.
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+wloss_wrs <- wilcox.test(x = weightloss[weightloss$diet == "A",2],
+                         y = weightloss[weightloss$diet == "B",2],
+                         paired = FALSE)
+
+cat(
+  paste0("Willcoxon rank sum test", "\n",
+         "p-value: ", round(wloss_wrs$p.value, 4), "\n",
+         "Decision: ", ifelse(wloss_wrs$p.value<0.05, 
+                              yes = "Reject the null hypothesis",
+                              no = "Fail to reject the null hypothesis"))
+)
+```
+> Going by the **Wilcoxon rank-sum test**, we conclude that diet A and B are significantly different in terms of weight loss.
+
+## B
+
+Perform a **median test** (Mood's median test) at $\alpha = 0.05$ for the same data.
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+median_weightloss <- median(weightloss$weight)
+
+# Diet A-Below median 
+A_below_median <- weightloss[weightloss$diet == "A" & weightloss$weight < median_weightloss ,2] |> length()
+
+# Diet A-Above median 
+A_above_median <- weightloss[weightloss$diet == "A" & weightloss$weight > median_weightloss ,2] |> length()
+
+# Diet B-Below median 
+B_below_median <- weightloss[weightloss$diet == "B" & weightloss$weight < median_weightloss ,2] |> length()
+
+# Diet B-Above median 
+B_above_median <- weightloss[weightloss$diet == "B" & weightloss$weight > median_weightloss ,2] |> length()
+
+# Mood's weight-loss matrix
+wl_matrix <- matrix(
+  c(A_below_median, B_below_median,
+    A_above_median, B_above_median), nrow = 2, byrow = TRUE,
+  dimnames = list(c("below median", "above median"),
+                  "diet" = c("A", "B"))
+)
+
+# Chi calculated
+median_calc <- (sum(wl_matrix)*(A_below_median*B_above_median - B_below_median*A_above_median)^2)/(sum(wl_matrix[1,])*sum(wl_matrix[2,])*sum(wl_matrix[,1])*sum(wl_matrix[,2]))
+
+# Critical value
+chi_critical <- qchisq(p = 0.95, df = 1)
+
+cat(
+  paste0("Mood's median test","\n",
+         "Chi-square calculated: ",round(median_calc, 4), "\n",
+         "Chi-square critical: ", round(chi_critical, 4), "\n",
+         "Decision: ", ifelse(median_calc>chi_critical,
+                              yes = "Reject the null hypothesis",
+                              no = "Fail to reject the null hypothesis"))
+)
+
+```
+
+
+> In conclusion, there is sufficient evidence in favor of the alternative hypothesis that both diets A and B differ significantly at the 5% level.  
+
+## C
+
+
+$${H}_{0}: The\ weight\ loss\ from\ both\ diets\ come\ from\ the\ same\ population\ distribution\ \\ {H}_{1}: The\ weight\ loss\ from\ both\ diets\ come\ from\ different\ population\ distributions\ $$
+
+
+Perform a **Kolmogorov-Smirnov two-sample test** at $\alpha = 0.05$.
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+wl_ks <- ks.test(x = weightloss[weightloss$diet == "A",2],
+                 y = weightloss[weightloss$diet == "B",2],
+                 alternative = "two.sided")
+
+cat(
+  paste0("Kolmogorov-Smirnov two-sample test", "\n",
+         "p-value: ", round(wl_ks$p.value, 4), "\n",
+         "Decision: ", ifelse(wl_ks$p.value<0.05,
+                              yes = "Reject the null hypothesis",
+                              no = "Fail to reject the null hypothesis"))
+)
+```
+> At the 5% level, both diet B and A are significantly different in terms of weight loss. 
+
+# FOUR
+
+A researcher compares the effectiveness of three different teaching methods on test scores. Students are randomly assigned to one of the three methods, and their scores are recorded.
+
+|              |     |     |     |     |     |     |     |     |
+|--------------|-----|-----|-----|-----|-----|-----|-----|-----|
+| **Method A** | 78  | 82  | 75  | 80  | 77  | 81  | 79  | 76  |
+| **Method B** | 68  | 72  | 65  | 70  | 67  | 71  | 69  | 66  |
+| **Method C** | 85  | 88  | 82  | 87  | 84  | 86  | 83  | 81  |
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+teaching <- data.frame(
+  method = rep(c("A","B","C"), each = 8),
+  score = c(78,82,75,80,77,81,79,76,
+           68,72,65,70,67,71,69,66,
+           85,88,82,87,84,86,83,81)
+)
+
+```
+
+## A
+
+Perform a **Kruskal-Wallis test** at $\alpha = 0.05$ to determine if the teaching methods differ
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+tm <- kruskal.test(score~method, data = teaching)
+
+cat(
+  paste0("Kruskal Wallis test", "\n",
+         "p-value: ", round(tm$p.value,4), "\n",
+         "Decision: ", ifelse(tm$p.value<0.05, yes = "Reject null hypothesis", no = "Fail 
+                              to reject the null hypothesis"))
+)
+```
+
+> The sample data provides sufficient evidence against the null hypothesis that states that all three teaching methods share the same location in terms of student performance.
+
+## B
+
+Conduct **post-hoc pairwise comparisons** using the Dunn's test with Bonferroni correction and identify which methods differ significantly
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+dunn_teaching <- DunnTest(x = teaching$score, g = teaching$method,
+                          method = "bonferroni",
+                          alternative = "two.sided")
+
+dunn_teaching |> as.matrix() 
+# |> kable() |> kable_minimal()
+```
+
+> From the results table above, teaching Method C and B has the only p-value less than 0.05. This means that both the teaching methods significantly differ from each other at a significance level of 5%, with method C presenting better results in terms of student scores.
+
+# FIVE
+
+## A
+
+A study measuring the reaction times (in milliseconds) for 6 subjects under three different lighting conditions in a repeated measures design:
+
+|                  |     |     |     |     |     |     |
+|------------------|-----|-----|-----|-----|-----|-----|
+| **Subject**      | 1   | 2   | 3   | 4   | 5   | 6   |
+| **Dim light**    | 250 | 265 | 258 | 272 | 248 | 260 |
+| **Normal light** | 235 | 248 | 240 | 255 | 232 | 245 |
+| **Bright light** | 220 | 232 | 225 | 238 | 218 | 228 |
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+light <- data.frame(
+  subject = rep(1:6, each = 3),
+  intensity = rep(c("dim", "normal", "bright"), 3),
+  time = c(250, 235, 220, 265, 248, 232,
+           258, 240, 225, 272, 255, 238,
+           248, 232, 218, 260, 245, 228)
+)
+```
+
+### a
+
+Perform a **Friedman test** at $\alpha = 0.05$ to determine if the lighting conditions affect reaction time
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+lt <- friedman.test(y = light$time, groups = light$intensity, blocks = light$subject)
+
+cat(
+  paste0("Friedman test", "\n",
+         "p-value: ",round(lt$p.value, 4), "\n",
+         "Decision: ", ifelse(lt$p.value<0.05, 
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"))
+)
+```
+
+> The sampled observations show that that the reaction times under the three lighting conditions differ significantly with a 5% margin of error.
+
+### b
+
+Perform a post-hoc comparison using **Wilcoxon signed-rank tests** with an appropriate multiple comparison correction technique
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+light_wsr <- pairwise.wilcox.test(light$time, light$intensity,
+                                  paired = TRUE, p.adjust.method = "bonferroni")
+light_wsr$p.value
+
+```
+
+## B
+
+A study examines the relationship between daily coffee consumption (cups per day) and hours of sleep per night for 10 individuals
+
+|                |     |     |     |     |     |     |     |     |     |     |
+|----------------|-----|-----|-----|-----|-----|-----|-----|-----|-----|-----|
+| **individual** | 1   | 2   | 3   | 4   | 5   | 6   | 7   | 8   | 9   | 10  |
+| **cups**       | 3   | 1   | 4   | 2   | 5   | 3   | 6   | 2   | 4   | 1   |
+| **hours**      | 7.5 | 8.2 | 6.8 | 7.9 | 6.2 | 7.4 | 5.8 | 8   | 6.5 | 7.8 |
+
+### a
+
+Compute **Spearman's rank correlation coefficient** $\rho$ for these data
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+coffee <- data.frame(
+  "individual" = seq(1,10,1),
+  "cups" = c(3,1,4,2,5,3,6,2,4,1),
+  "hrs" = c(7.5,8.2,6.8,7.9,6.2,7.4,5.8,8.0,6.5,7.8)
+)
+
+coffee_cor <- cor.test(
+  x = coffee$cups, y = coffee$hrs,
+  method = "spearman", alternative = "two.sided"
+)
+
+cat(
+  paste0("Spearman's coefficient: ", round(coffee_cor$estimate, 4))
+)
+```
+
+### b
+
+Test whether $\rho$ is significantly different from zero at $\alpha = 0.05$. State your hypotheses clearly
+
+$$
+{H}_{0}: Relationship\ between\ cups\ consumed\ and\ hours\ slept\ is\ non-monotonic \\ {H}_{1}: Relationship\ between\ cups\ consumed\ and\ hours\ slept\ is\ monotonic 
+$$
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+cat(
+  paste0("Spearman rank coefficient:", "\n",
+         "p-value: ", round(coffee_cor$p.value, 4), "\n",
+         "Decision: ", ifelse(coffee_cor$p.value<0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"))
+)
+```
+
+> In conclusion, there is sufficient evidence in favor of the claim that the relationship between the number of coffee cups consumed in a day and the number of sleep hours at night is monotonic in nature at a significance level of 5%

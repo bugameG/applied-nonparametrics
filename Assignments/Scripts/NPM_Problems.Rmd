@@ -1,0 +1,182 @@
+---
+title: "Non-parametric Methods - Problems"
+author: "Gift Pamba"
+date: "April-May 2026"
+output:
+  html_document:
+    theme: darkly
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(DescTools)
+library(kableExtra)
+
+```
+
+# Comparing two related samples
+
+## ONE
+
+A teacher wished to determine if providing a bilingual dictionary to students with limited English proficiency improves math test scores. A small class of students **(n = 10)** was selected. Students were given two math tests. Each test covered the same type of math content; however, students were provided a bilingual dictionary on the second test. The data in `Table 3.10` represent the students’ performance on each math test.
+
+| student | Math test without a billingual dictionary | Math test with a billingual dictionary |
+|----------|------------------------|------------------------|
+| 1 | 30 | 39 |
+| 2 | 56 | 46 |
+| 3 | 48 | 37 |
+| 4 | 47 | 44 |
+| 5 | 43 | 32 |
+| 6 | 45 | 39 |
+| 7 | 36 | 41 |
+| 8 | 44 | 40 |
+| 9 | 44 | 38 |
+| 10 | 40 | 46 |
+
+: Table 3.10
+
+Use a **one-tailed Wilcoxon signed rank** test and a **one-tailed sign test** to determine which testing condition resulted in higher scores. Use $\alpha = 0.05$. Report your findings
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+tab1 <- data.frame(
+  "student"=seq(1,10,1),
+  "before"=c(30,56,48,47,43,45,36,44,44,40),
+  "after"=c(39,46,37,44,32,39,41,40,38,46)
+)
+```
+
+### a
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+dictionary <- wilcox.test(x = tab1$before, y = tab1$after,
+                          alternative = "greater",
+                          paired = TRUE)
+```
+
+### b
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+dictionary2 <- SignTest(x = tab1$before, y = tab1$after,
+                        alternative = "greater")
+```
+
+## TWO
+
+A research study was done to investigate the influence of being alone at night on the human male heart rate.Two mean were sent into a wooded area, one at a time, at night, for 20 minutes. They had a heart monitor to record their pulse rate. The second night, the same men were sent into a similar wooded area accompanied by a companion. Thei pulse rate was recorded again. The researcher wanted to see if having a companion would change their pulse rate. The median pulse rates are recorded in `Table 3.11`. Use a **two-tailed Wilcoxon signed-rank test** and a **two-tailed signed test** to determine which condition produced a higher pulse rate. Use $\alpha = 0.05$. Report your findings
+
+| participant | median rate alone | median rate with companion |
+|-------------|-------------------|----------------------------|
+| A           | 88                | 72                         |
+| B           | 77                | 74                         |
+| C           | 91                | 80                         |
+| D           | 70                | 77                         |
+| E           | 80                | 71                         |
+| F           | 85                | 83                         |
+| G           | 90                | 80                         |
+| H           | 82                | 91                         |
+| I           | 93                | 86                         |
+| J           | 75                | 69                         |
+
+: Table 3.11
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+pulse <- data.frame(
+  "participant" = LETTERS[1:10],
+  "without" = c(88,77,91,70,80,85,90,82,93,75),
+  "with" = c(72,74,80,77,71,83,80,91,86,69))
+```
+
+### a
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+hr <- wilcox.test(x = pulse$without, y = pulse$with,
+                  alternative = "two.sided", 
+                  paired = TRUE)
+```
+
+### b
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+hr2 <- SignTest(x = pulse$without, y = pulse$with,
+                  alternative = "two.sided")
+```
+
+## THREE
+
+A researcher conducts a pilot study to compare two treatments to help obese female teenagers lose weight. She tests each individual in two different treatment conditions. The data in `Table 3.12` provides the number of pounds that each participant lost.
+
+|                  |                 |                 |
+|------------------|-----------------|-----------------|
+| **participant**  | **treatment 1** | **treatment 2** |
+| 1                | 10              | 18              |
+| 2                | 20              | 12              |
+| 3                | 15              | 16              |
+| 4                | 9               | 7               |
+| 5                | 18              | 21              |
+| 6                | 11              | 17              |
+| 7                | 6               | 13              |
+| 8                | 12              | 14              |
+
+: Table 3.12
+
+Use a **two-tailed Wilcoxon signed-rank test** and a **two-tailed sign test** to determine which treatment resulted in greater weight loss. Use $\alpha = 0.05$. Report your findings 
+
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+wl <- data.frame(
+  "participant" = 1:8,
+  "t1" = c(10,20,15,9,18,11,6,12),
+  "t2" = c(18,12,16,7,21,17,13,14))
+```
+
+
+### a
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+wl_wsr <- wilcox.test(x = wl$t1, y = wl$t2,
+                      alternative = "two.sided", paired = TRUE)
+```
+
+
+### b
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+wl_sign <- SignTest(x = wl$t1, y = wl$t2,
+                    alternative = "two.sided")
+```
+
+## FOUR 
+
+Twenty participants in an exercise program were measured on the number of sit-ups they could do before physical exercise (first count) and the number they could do after they had done at least 45 minutes of other physical exercise.(second count) `Table 3.13` shows the results for 20 participants obbtained during two separate physical exercise sessions. Determine the ES for a calculated z-score
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+ex <- data.frame("participant" = seq(1,20,1),
+                 "first" = c(18,19,20,29,15,22,21,30,22,11),
+                 "second" = c(20,21,21,20,18,27,24,13,10,10))
+```
+
+
+## FIVE
+
+A school is trying to get more students to participate in activities that will make learning more desirable. `Table 3.14` shows the number of activities that each of the 10 students in one class participated in last year before a new activity program was implemented and this year after it was implemented. 
+Construct a 95% confidence interval based on the **Wilcoxon signed-rank test** to determine whether the new activity program had a significant positive effect on the student participation
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+activity <- data.frame(
+  "participant" = seq(1,10,1),
+  "lastyr" = c(18,22,10,25,16,14,21,13,28,12),
+  "thisyr" = c(20,28,18,23,20,21,17,18,22,21)
+)
+```
+
+
+
+
+
+
+
+
+
+# Comparing two unrelated samples
+
+## ONE

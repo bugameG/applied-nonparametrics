@@ -1,7 +1,7 @@
 ---
 title: "MAS 812: Non-parametric methods"
 author: "Gift Pamba"
-date: "2026-04-29"
+date: "April-May 2026"
 output:
   html_document:
     df_print: paged
@@ -190,7 +190,7 @@ wloss_wrs <- wilcox.test(x = weightloss[weightloss$diet == "A",2],
                          paired = FALSE)
 
 cat(
-  paste0("Willcoxon rank sum test", "\n",
+  paste0("Wilcoxon rank-sum test", "\n",
          "p-value: ", round(wloss_wrs$p.value, 4), "\n",
          "Decision: ", ifelse(wloss_wrs$p.value<0.05, 
                               yes = "Reject the null hypothesis",
@@ -202,6 +202,9 @@ cat(
 ## B
 
 Perform a **median test** (Mood's median test) at $\alpha = 0.05$ for the same data.
+
+$${H}_{0}: Both\ diets\ have\ the\ same\ median\ weight\ loss \\
+{H}_{1}:Both\ diets\ have\ different\ median\ weight\ losses\ $$
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 median_weightloss <- median(weightloss$weight)
@@ -267,7 +270,8 @@ cat(
                               no = "Fail to reject the null hypothesis"))
 )
 ```
-> At the 5% level, both diet B and A are significantly different in terms of weight loss. 
+
+> At the 5% level, the weight loss from diet B is drawn from a significantly different distibution from the weight loss brought about by diet A.   
 
 # FOUR
 
@@ -293,6 +297,9 @@ teaching <- data.frame(
 
 Perform a **Kruskal-Wallis test** at $\alpha = 0.05$ to determine if the teaching methods differ
 
+$${H}_{0}:All\ the\ three\ teaching\ methods\ have\ the\ same\ median \\
+{H}_{1}:The\ three\ methods\ have\ different\ medians\ $$
+
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 
 tm <- kruskal.test(score~method, data = teaching)
@@ -305,7 +312,7 @@ cat(
 )
 ```
 
-> The sample data provides sufficient evidence against the null hypothesis that states that all three teaching methods share the same location in terms of student performance.
+> The sample data provides sufficient evidence against the null hypothesis that states that all three teaching methods share the same location(median) in terms of student performance.
 
 ## B
 
@@ -349,6 +356,9 @@ light <- data.frame(
 
 Perform a **Friedman test** at $\alpha = 0.05$ to determine if the lighting conditions affect reaction time
 
+$${H}_{0}:All\ the\ three\ lighting\ conditions\ have\ the\ same\ effect \\ 
+{H}_{1}:At\ least\ one\ condition\ tends\ to\ yield\ longer\ reaction\ times\ than\ at\ least\ one\ other\ $$
+
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 lt <- friedman.test(y = light$time, groups = light$intensity, blocks = light$subject)
 
@@ -373,6 +383,11 @@ light_wsr <- pairwise.wilcox.test(light$time, light$intensity,
 light_wsr$p.value
 
 ```
+> The above table shows the p-values for all the pairwise comparisons. Under the Bonferroni adjustment, we compare them to a critical p-value of `r 0.0167`.
+
+> All three p-values are greater than `r 0.0167`, which implies that all the pairwise differences are statistically insignificant despite the significance in the reaction times reported by the initial Friedman test.
+
+> This example exposes the conservativeness exhibited by the Bonferroni procedure when dealing with small samples
 
 ## B
 

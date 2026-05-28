@@ -3,7 +3,9 @@ title: "Non-parametric Methods - Problems"
 author: "Gift Pamba"
 date: "April-May 2026"
 output:
+  word_document:
   html_document:
+    toc: true
     theme: darkly
 ---
 
@@ -147,12 +149,37 @@ wl_sign <- SignTest(x = wl$t1, y = wl$t2,
 
 ## FOUR 
 
-Twenty participants in an exercise program were measured on the number of sit-ups they could do before physical exercise (first count) and the number they could do after they had done at least 45 minutes of other physical exercise.(second count) `Table 3.13` shows the results for 20 participants obbtained during two separate physical exercise sessions. Determine the ES for a calculated z-score
+Twenty participants in an exercise program were measured on the number of sit-ups they could do before physical exercise (first count) and the number they could do after they had done at least 45 minutes of other physical exercise.(second count) `Table 3.13` shows the results for 20 participants obbtained during two separate physical exercise sessions. Determine the **Effect Size** for a calculated z-score
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
-ex <- data.frame("participant" = seq(1,20,1),
+ex <- data.frame("participant" = seq(1,10,1),
                  "first" = c(18,19,20,29,15,22,21,30,22,11),
                  "second" = c(20,21,21,20,18,27,24,13,10,10))
+# Sample size
+n_ex <- nrow(ex)
+
+# Wilcoxon signed-rank hypothesis test for paired samples
+ex_wsr <- wilcox.test(x = ex$first, y = ex$second,
+                      alternative = "two.sided",
+                      paired = TRUE)
+
+# Test statistic
+ex_wsr_t <- ex_wsr$statistic
+
+# Normal approximation
+## E[T]
+ex_wsr_tmean <- (n_ex*n_ex+1)/4
+
+## sd[T]
+ex_wsr_tsd <- sqrt((n_ex*(n_ex+1)*(2*n_ex+1))/24)
+
+## z-variate
+z_ex <- ((ex_wsr_t-ex_wsr_tmean)/ex_wsr_tsd)
+
+## Effect size
+es_ex <- abs(z_ex)/sqrt(n_ex)
+
+cat(paste0("Effect size: ", round(es_ex, 4)))
 ```
 
 
@@ -167,8 +194,11 @@ activity <- data.frame(
   "lastyr" = c(18,22,10,25,16,14,21,13,28,12),
   "thisyr" = c(20,28,18,23,20,21,17,18,22,21)
 )
-```
 
+# Wilcoxon signed-rank hypothesis test
+act_wsr <- wilcox.test(x = activity$lastyr, y = activity$thisyr,
+                       alternative = "two.sided", paired = TRUE);act_wsr$data.name
+```
 
 
 

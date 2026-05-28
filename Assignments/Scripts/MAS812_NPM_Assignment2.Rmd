@@ -312,8 +312,8 @@ c. Explain why they might differ.
 
 a. Perform a runs test for homogeneity
 
-$${H}_{0}: The\ samples\ come\ from\ the\ same\ poppulation$$
-$${H}_{1}:The\ samples\ come\ from\ different\ poppulations $$
+$${H}_{0}: The\ samples\ come\ from\ the\ same\ population$$
+$${H}_{1}:The\ samples\ come\ from\ different\ populations $$
 
 
 ```{r, echo = FALSE, warning = FALSE, message = FALSE}

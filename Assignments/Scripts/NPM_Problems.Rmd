@@ -3,10 +3,12 @@ title: "Non-parametric Methods - Problems"
 author: "Gift Pamba"
 date: "April-May 2026"
 output:
-  word_document:
   html_document:
     toc: true
+    toc_float: true
     theme: darkly
+  word_document:
+    toc: true
 ---
 
 ```{r setup, include=FALSE}
@@ -23,7 +25,7 @@ library(kableExtra)
 A teacher wished to determine if providing a bilingual dictionary to students with limited English proficiency improves math test scores. A small class of students **(n = 10)** was selected. Students were given two math tests. Each test covered the same type of math content; however, students were provided a bilingual dictionary on the second test. The data in `Table 3.10` represent the students’ performance on each math test.
 
 | student | Math test without a billingual dictionary | Math test with a billingual dictionary |
-|----------|------------------------|------------------------|
+|------------------|----------------------------|--------------------------|
 | 1 | 30 | 39 |
 | 2 | 56 | 46 |
 | 3 | 48 | 37 |
@@ -107,22 +109,21 @@ hr2 <- SignTest(x = pulse$without, y = pulse$with,
 
 A researcher conducts a pilot study to compare two treatments to help obese female teenagers lose weight. She tests each individual in two different treatment conditions. The data in `Table 3.12` provides the number of pounds that each participant lost.
 
-|                  |                 |                 |
-|------------------|-----------------|-----------------|
-| **participant**  | **treatment 1** | **treatment 2** |
-| 1                | 10              | 18              |
-| 2                | 20              | 12              |
-| 3                | 15              | 16              |
-| 4                | 9               | 7               |
-| 5                | 18              | 21              |
-| 6                | 11              | 17              |
-| 7                | 6               | 13              |
-| 8                | 12              | 14              |
+|                 |                 |                 |
+|-----------------|-----------------|-----------------|
+| **participant** | **treatment 1** | **treatment 2** |
+| 1               | 10              | 18              |
+| 2               | 20              | 12              |
+| 3               | 15              | 16              |
+| 4               | 9               | 7               |
+| 5               | 18              | 21              |
+| 6               | 11              | 17              |
+| 7               | 6               | 13              |
+| 8               | 12              | 14              |
 
 : Table 3.12
 
-Use a **two-tailed Wilcoxon signed-rank test** and a **two-tailed sign test** to determine which treatment resulted in greater weight loss. Use $\alpha = 0.05$. Report your findings 
-
+Use a **two-tailed Wilcoxon signed-rank test** and a **two-tailed sign test** to determine which treatment resulted in greater weight loss. Use $\alpha = 0.05$. Report your findings
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 wl <- data.frame(
@@ -131,14 +132,12 @@ wl <- data.frame(
   "t2" = c(18,12,16,7,21,17,13,14))
 ```
 
-
 ### a
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 wl_wsr <- wilcox.test(x = wl$t1, y = wl$t2,
                       alternative = "two.sided", paired = TRUE)
 ```
-
 
 ### b
 
@@ -147,14 +146,17 @@ wl_sign <- SignTest(x = wl$t1, y = wl$t2,
                     alternative = "two.sided")
 ```
 
-## FOUR 
+## FOUR
 
 Twenty participants in an exercise program were measured on the number of sit-ups they could do before physical exercise (first count) and the number they could do after they had done at least 45 minutes of other physical exercise.(second count) `Table 3.13` shows the results for 20 participants obbtained during two separate physical exercise sessions. Determine the **Effect Size** for a calculated z-score
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
-ex <- data.frame("participant" = seq(1,10,1),
-                 "first" = c(18,19,20,29,15,22,21,30,22,11),
-                 "second" = c(20,21,21,20,18,27,24,13,10,10))
+ex <- data.frame(
+"participant" = seq(1,20,1),
+"first" = c(18,19,20,29,15,22,21,30,22,11,20,21,21,20,18,27,24,13,10,10),
+"second" = c(28,18,28,20,30,25,28,18,27,30,24,27,10,40,20,14,29,30,24,36)
+)
+
 # Sample size
 n_ex <- nrow(ex)
 
@@ -182,11 +184,9 @@ es_ex <- abs(z_ex)/sqrt(n_ex)
 cat(paste0("Effect size: ", round(es_ex, 4)))
 ```
 
-
 ## FIVE
 
-A school is trying to get more students to participate in activities that will make learning more desirable. `Table 3.14` shows the number of activities that each of the 10 students in one class participated in last year before a new activity program was implemented and this year after it was implemented. 
-Construct a 95% confidence interval based on the **Wilcoxon signed-rank test** to determine whether the new activity program had a significant positive effect on the student participation
+A school is trying to get more students to participate in activities that will make learning more desirable. `Table 3.14` shows the number of activities that each of the 10 students in one class participated in last year before a new activity program was implemented and this year after it was implemented. Construct a 95% confidence interval based on the **Wilcoxon signed-rank test** to determine whether the new activity program had a significant positive effect on the student participation
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 activity <- data.frame(
@@ -197,16 +197,180 @@ activity <- data.frame(
 
 # Wilcoxon signed-rank hypothesis test
 act_wsr <- wilcox.test(x = activity$lastyr, y = activity$thisyr,
-                       alternative = "two.sided", paired = TRUE);act_wsr$data.name
+                       alternative = "two.sided", paired = TRUE,
+                       conf.int = TRUE)
+
+cat(
+  paste0("[",round(act_wsr$conf.int[1],4),",",round(act_wsr$conf.int[2],4),"]")
+)
 ```
-
-
-
-
-
-
-
 
 # Comparing two unrelated samples
 
 ## ONE
+
+The data in `Table 4.8` were obtained from a reading-level test for 1st grade children. Compare the performance gains of the two different methods for teaching reading.
+
+| Method     | Gain score | Method      | Gain score |
+|------------|------------|-------------|------------|
+| One on one | 16         | Small group | 11         |
+| One on one | 13         | Small group | 2          |
+| One on one | 16         | Small group | 10         |
+| One on one | 16         | Small group | 4          |
+| One on one | 13         | Small group | 9          |
+| One on one | 9          | Small group | 8          |
+| One on one | 12         | Small group | 5          |
+| One on one | 12         | Small group | 6          |
+| One on one | 20         | Small group | 4          |
+| One on one | 17         | Small group | 16         |
+
+: Table 4.8
+
+Use **two-tailed Mann-Whitney U** and **Kolmogorov-Smirnov two-sample** tests to determine which method was better for teaching reading. Set $\alpha = 0.05$. Report your findings
+
+### a
+
+### b
+
+## TWO
+
+A research study was conducted to see if an active involvement in a hobby has a positive effect on the health of a person who retires after age 65. The data in `Table 4.9` describes the health (number of doctor visits in 1 year) for participants who are involved in a hobby almost daily and those who are not.
+
+| No hobby group | Hobby group |
+|----------------|-------------|
+| 12             | 9           |
+| 15             | 5           |
+| 8              | 10          |
+| 11             | 3           |
+| 9              | 4           |
+| 17             | 2           |
+
+: Table 4.9
+
+Use **one-tailed Mann-Whitney U** and **Kolmogorov-Smirnov two-sample** tests to determine whether the hobby tends to reduce the need for doctor visits. Set $\alpha = 0.05$. Report your findings
+
+### a
+
+### b
+
+| Method 1 | Method 2 |
+|----------|----------|
+| 53       | 91       |
+| 41       | 18       |
+| 17       | 14       |
+| 45       | 21       |
+| 44       | 23       |
+| 12       | 99       |
+| 49       | 16       |
+| 50       | 10       |
+
+: Table 4.10
+
+## THREE
+
+`Table 4.10` shows assessment scores of two different classes who are being taught computer skills using two different methods
+
+Use **two-tailed Mann-Whitney U** and **Kolmogorov-Smirnov two-sample** tests to determine which method was better for teaching compute skills. Set $\alpha = 0.05$. Report your findings
+
+### a
+
+### b
+
+## FOUR
+
+Two methods of teaching were compared. Method 1 uses the computer to interact with the student and diagnose and remediate the student based on misconceptions. Method 2 was taught using workbooks in classroom groups. `Table 4.11` shows the data obtained on an assessment after 6 weeks of instruction. Calculate the ES using the z-score from the analysis.
+
+|          |          |
+|----------|----------|
+| Method 1 | Method 2 |
+| 27       | 9        |
+| 38       | 42       |
+| 15       | 21       |
+| 85       | 83       |
+| 36       | 110      |
+| 95       | 19       |
+| 93       | 29       |
+| 57       | 40       |
+| 63       | 30       |
+| 81       | 23       |
+| 65       | 18       |
+| 77       | 32       |
+| 59       | 101      |
+| 89       | 7        |
+| 41       | 50       |
+| 26       | 37       |
+| 102      | 22       |
+| 55       | 71       |
+| 46       | 16       |
+| 82       | 45       |
+| 24       | 35       |
+| 87       | 28       |
+| 66       | 91       |
+| 12       | 86       |
+| 90       | 20       |
+
+: Table 4.11
+
+## FIVE
+
+Two methods were used to provide instruction in Scienc efor 7th Grade. Method 1 included a laboratory each week and method 2 has only classroom work with lecture and worksheets. `Table 4.12` shows end-of-term test performance for the two methods. Construct a 95% median confidence interval based on the difference between two independent samples to compare the two methods.
+
+| Method 1 | Method 2 |
+|----------|----------|
+| 15       | 8        |
+| 23       | 15       |
+| 9        | 10       |
+| 12       | 13       |
+| 18       | 17       |
+| 22       | 5        |
+| 17       | 18       |
+| 20       | 7        |
+
+: Table 4.12
+
+# Comparing more than two related samples
+
+## ONE
+
+A graduate student performed a pilot study for his dissertation. He wanted to examine the effects of animal companionship on elderly males. He selected 10 male participants from a nursing home. Then he used an ABAB research design, where A represented a week with the absence of a cat and B represented a week with the presence of a cat. At the end of each week, he administered a 20-point survey to measure the quality of life satisfaction. The survey results are presented in `Table 5.9`
+
+| participant | week 1 | week 2 | week 3 | week 4 |
+|-------------|--------|--------|--------|--------|
+| 1           | 7      | 6      | 8      | 9      |
+| 2           | 9      | 8      | 10     | 1      |
+| 3           | 15     | 18     | 16     | 17     |
+| 4           | 7      | 6      | 8      | 9      |
+| 5           | 7      | 8      | 10     | 11     |
+| 6           | 10     | 14     | 13     | 11     |
+| 7           | 12     | 19     | 11     | 13     |
+| 8           | 7      | 4      | 2      | 5      |
+| 9           | 8      | 7      | 9      | 5      |
+| 10          | 12     | 16     | 14     | 15     |
+
+: Table 5.9
+
+Use a **Friedman test** to determine if one or more of the groups are significantly different. Since this is a pilot study, use $\alpha = 0.10$. If a significant difference exists, use **Wilcoxon signed-rank tests** to identify which groups are significantly different. Use the **Bonferroni procedure** to limit the type I error rate. Report your findings
+
+## TWO
+
+A physical education teacher conducted an action research project to examine a strength and conditioning program. Using 12 male participants, she measures the number of curl ups they could do in 1 minute. She measured their performance before the program. Then, she measured their performance at 1 month intervals. `Table 5.10` presents the performance results.
+
+| participant | baseline  | month 1 | month 2 |
+|-------------|-----------|---------|---------|
+| 1           | 66        | 67      | 69      |
+| 2           | 49        | 50      | 56      |
+| 3           | 51        | 52      | 49      |
+| 4           | 65        | 65      | 69      |
+| 5           | 42        | 43      | 46      |
+| 6           | 38        | 39      | 40      |
+| 7           | 33        | 31      | 39      |
+| 8           | 41        | 41      | 44      |
+| 9           | 46        | 47      | 48      |
+| 10          | 45        | 46      | 46      |
+| 11          | 36        | 33      | 34      |
+| 12          | 51        | 55      | 67      |
+
+: Table 5.10: Number of curl ups in a minute
+
+
+Use a **Friedman test** with $\alpha = 0.05$ to determine if one or more of the groups are significantly different. The teacher is expecting performance gains, so if a significant difference exists, use **one-tailed Wilcoxon signed-rank tests** to identify which groups are significantly different. Use the **Bonferroni** procedure to limit the type I error rate. Report your findings.  

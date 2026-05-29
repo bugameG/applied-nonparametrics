@@ -226,11 +226,33 @@ The data in `Table 4.8` were obtained from a reading-level test for 1st grade ch
 
 : Table 4.8
 
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+firstgrade <- data.frame(
+  "method" = c(rep("ono", 10), rep("sg", 10)),
+  "score" = c(16,13,16,16,13,9,12,12,20,17,
+              11,2,10,4,9,8,5,6,4,16)
+)
+```
+
+
 Use **two-tailed Mann-Whitney U** and **Kolmogorov-Smirnov two-sample** tests to determine which method was better for teaching reading. Set $\alpha = 0.05$. Report your findings
 
 ### a
 
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+fg_mw <- wilcox.test(x = firstgrade$score[firstgrade$method=="ono"],
+                     y = firstgrade$score[firstgrade$method=="sg"],
+                     alternative = "two.sided", paired = FALSE)
+```
+
+
 ### b
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+fg_ks <- ks.test(x = firstgrade$score[firstgrade$method=="ono"],
+                 y = firstgrade$score[firstgrade$method=="sg"],
+                     alternative = "two.sided")
+```
 
 ## TWO
 
@@ -247,11 +269,40 @@ A research study was conducted to see if an active involvement in a hobby has a 
 
 : Table 4.9
 
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+hobby <- data.frame(
+  "group" = c(rep("nohobby",6), rep("hobby",6)),
+  "visits" = c(12,15,8,11,9,17,
+               9,5,10,3,4,2)
+)
+```
+
+
 Use **one-tailed Mann-Whitney U** and **Kolmogorov-Smirnov two-sample** tests to determine whether the hobby tends to reduce the need for doctor visits. Set $\alpha = 0.05$. Report your findings
 
 ### a
 
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+hobby_mw <- wilcox.test(x = hobby$visits[hobby$group=="nohobby"],
+                        y = hobby$visits[hobby$group=="hobby"],
+                        alternative = "greater", paired = FALSE)
+```
+
+
 ### b
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+hobby_ks <- ks.test(x = hobby$visits[hobby$group=="nohobby"],
+                    y = hobby$visits[hobby$group=="hobby"],
+                    alternative = "two.sided")
+```
+
+
+
+
+
+## THREE
+
 
 | Method 1 | Method 2 |
 |----------|----------|
@@ -266,7 +317,6 @@ Use **one-tailed Mann-Whitney U** and **Kolmogorov-Smirnov two-sample** tests to
 
 : Table 4.10
 
-## THREE
 
 `Table 4.10` shows assessment scores of two different classes who are being taught computer skills using two different methods
 

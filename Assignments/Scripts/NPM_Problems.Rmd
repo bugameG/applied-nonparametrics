@@ -1,7 +1,7 @@
 ---
 title: "Non-parametric Methods - Problems"
 author: "Gift Pamba"
-date: "April-May 2026"
+date: "May-June 2026"
 output:
   html_document:
     toc: true
@@ -170,7 +170,7 @@ ex_wsr_t <- ex_wsr$statistic
 
 # Normal approximation
 ## E[T]
-ex_wsr_tmean <- (n_ex*n_ex+1)/4
+ex_wsr_tmean <- ((n_ex)*(n_ex+1))/4
 
 ## sd[T]
 ex_wsr_tsd <- sqrt((n_ex*(n_ex+1)*(2*n_ex+1))/24)
@@ -234,7 +234,6 @@ firstgrade <- data.frame(
 )
 ```
 
-
 Use **two-tailed Mann-Whitney U** and **Kolmogorov-Smirnov two-sample** tests to determine which method was better for teaching reading. Set $\alpha = 0.05$. Report your findings
 
 ### a
@@ -244,7 +243,6 @@ fg_mw <- wilcox.test(x = firstgrade$score[firstgrade$method=="ono"],
                      y = firstgrade$score[firstgrade$method=="sg"],
                      alternative = "two.sided", paired = FALSE)
 ```
-
 
 ### b
 
@@ -277,7 +275,6 @@ hobby <- data.frame(
 )
 ```
 
-
 Use **one-tailed Mann-Whitney U** and **Kolmogorov-Smirnov two-sample** tests to determine whether the hobby tends to reduce the need for doctor visits. Set $\alpha = 0.05$. Report your findings
 
 ### a
@@ -288,7 +285,6 @@ hobby_mw <- wilcox.test(x = hobby$visits[hobby$group=="nohobby"],
                         alternative = "greater", paired = FALSE)
 ```
 
-
 ### b
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
@@ -297,12 +293,7 @@ hobby_ks <- ks.test(x = hobby$visits[hobby$group=="nohobby"],
                     alternative = "two.sided")
 ```
 
-
-
-
-
 ## THREE
-
 
 | Method 1 | Method 2 |
 |----------|----------|
@@ -317,14 +308,33 @@ hobby_ks <- ks.test(x = hobby$visits[hobby$group=="nohobby"],
 
 : Table 4.10
 
-
 `Table 4.10` shows assessment scores of two different classes who are being taught computer skills using two different methods
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+compskills <- data.frame(
+  "method" = c(rep("method1", 8), rep("method2", 8)),
+  "score" = c(53,41,17,45,44,12,49,50,
+               91,18,14,21,23,99,16,10)
+  )
+```
 
 Use **two-tailed Mann-Whitney U** and **Kolmogorov-Smirnov two-sample** tests to determine which method was better for teaching compute skills. Set $\alpha = 0.05$. Report your findings
 
 ### a
 
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+comp_mw <- wilcox.test(x = compskills$score[compskills$method == "method1"],
+                       y = compskills$score[compskills$method == "method2"],
+                       alternative = "two.sided", paired = FALSE)
+```
+
 ### b
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+comp_ks <- ks.test(x = compskills$score[compskills$method == "method1"],
+                   y = compskills$score[compskills$method == "method2"],
+                   alternative = "two.sided")
+```
 
 ## FOUR
 
@@ -361,9 +371,43 @@ Two methods of teaching were compared. Method 1 uses the computer to interact wi
 
 : Table 4.11
 
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+comp2 <- data.frame(
+  "method" = c(rep("method1",25), rep("method2", 25)),
+"score" = c(27,38,15,85,36,95,93,57,63,81,65,77,59,89,41,26,102,55,46,82,24,87,66,12,90,
+9,42,21,83,110,19,29,40,30,23,18,32,101,7,50,37,22,71,16,45,35,28,91,86,20)
+)
+
+# Sample size
+n_comp2 <- 25
+
+# Wilcoxon signed-rank hypothesis test for paired samples
+comp2_wsr <- wilcox.test(x = comp2$score[comp2$method == "method1"], 
+                         y = comp2$score[comp2$method == "method2"],
+                      alternative = "two.sided", paired = FALSE)
+
+# Test statistic
+comp2_wsr_t <- comp2_wsr$statistic
+
+# Normal approximation
+## E[T]
+comp2_wsr_tmean <- ((n_comp2)*(n_comp2+1))/4
+
+## sd[T]
+comp2_wsr_tsd <- sqrt((n_comp2*(n_comp2+1)*(2*n_comp2+1))/24)
+
+## z-variate
+z_comp2 <- ((comp2_wsr_t-comp2_wsr_tmean)/comp2_wsr_tsd)
+
+## Effect size
+es_comp2 <- abs(z_comp2)/sqrt(n_comp2)
+
+cat(paste0("Effect size: ", round(es_comp2, 4)))
+```
+
 ## FIVE
 
-Two methods were used to provide instruction in Scienc efor 7th Grade. Method 1 included a laboratory each week and method 2 has only classroom work with lecture and worksheets. `Table 4.12` shows end-of-term test performance for the two methods. Construct a 95% median confidence interval based on the difference between two independent samples to compare the two methods.
+Two methods were used to provide instruction in Science for 7th Grade. Method 1 included a laboratory each week and method 2 has only classroom work with lecture and worksheets. `Table 4.12` shows end-of-term test performance for the two methods. Construct a 95% median confidence interval based on the difference between two independent samples to compare the two methods.
 
 | Method 1 | Method 2 |
 |----------|----------|
@@ -377,6 +421,14 @@ Two methods were used to provide instruction in Scienc efor 7th Grade. Method 1 
 | 20       | 7        |
 
 : Table 4.12
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+lab <- data.frame(
+  "method" = c(rep("1", 8), rep("2", 8)),
+  "score" = c(15,23,9,12,18,22,17,20,
+              8,15,10,13,17,5,18,7)
+)
+```
 
 # Comparing more than two related samples
 
@@ -399,28 +451,101 @@ A graduate student performed a pilot study for his dissertation. He wanted to ex
 
 : Table 5.9
 
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+buddy <- data.frame(
+  "participant" = rep(1:10, each = 4),
+  "week" = rep(1:4, times = 10),
+  "score" = c(7,6,8,9, 9,8,10,1, 15,18,16,17, 7,6,8,9, 7,8,10,11, 
+              10,14,13,11, 12,19,11,13, 7,4,2,5, 8,7,9,5, 12,16,14,15)
+)
+```
+
 Use a **Friedman test** to determine if one or more of the groups are significantly different. Since this is a pilot study, use $\alpha = 0.10$. If a significant difference exists, use **Wilcoxon signed-rank tests** to identify which groups are significantly different. Use the **Bonferroni procedure** to limit the type I error rate. Report your findings
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+buddy_fr <- friedman.test(y = buddy$score, 
+                          groups = buddy$week, 
+                          blocks = buddy$participant)
+```
 
 ## TWO
 
 A physical education teacher conducted an action research project to examine a strength and conditioning program. Using 12 male participants, she measures the number of curl ups they could do in 1 minute. She measured their performance before the program. Then, she measured their performance at 1 month intervals. `Table 5.10` presents the performance results.
 
-| participant | baseline  | month 1 | month 2 |
-|-------------|-----------|---------|---------|
-| 1           | 66        | 67      | 69      |
-| 2           | 49        | 50      | 56      |
-| 3           | 51        | 52      | 49      |
-| 4           | 65        | 65      | 69      |
-| 5           | 42        | 43      | 46      |
-| 6           | 38        | 39      | 40      |
-| 7           | 33        | 31      | 39      |
-| 8           | 41        | 41      | 44      |
-| 9           | 46        | 47      | 48      |
-| 10          | 45        | 46      | 46      |
-| 11          | 36        | 33      | 34      |
-| 12          | 51        | 55      | 67      |
+| participant | baseline | month 1 | month 2 |
+|-------------|----------|---------|---------|
+| 1           | 66       | 67      | 69      |
+| 2           | 49       | 50      | 56      |
+| 3           | 51       | 52      | 49      |
+| 4           | 65       | 65      | 69      |
+| 5           | 42       | 43      | 46      |
+| 6           | 38       | 39      | 40      |
+| 7           | 33       | 31      | 39      |
+| 8           | 41       | 41      | 44      |
+| 9           | 46       | 47      | 48      |
+| 10          | 45       | 46      | 46      |
+| 11          | 36       | 33      | 34      |
+| 12          | 51       | 55      | 67      |
 
 : Table 5.10: Number of curl ups in a minute
 
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+curlups <- data.frame(
+  "participant" = rep(1:12, each = 3),
+  "month" = rep(c("baseline", "month1", "month2"), times = 12),
+  "score" = c(66,67,69,49,50,56,51,52,49,65,65,69,42,43,46,38,39,40,33,31,39,41,41,44,46,47,48,45,46,46,36,33,34,51,55,67)
+)
+```
 
-Use a **Friedman test** with $\alpha = 0.05$ to determine if one or more of the groups are significantly different. The teacher is expecting performance gains, so if a significant difference exists, use **one-tailed Wilcoxon signed-rank tests** to identify which groups are significantly different. Use the **Bonferroni** procedure to limit the type I error rate. Report your findings.  
+Use a **Friedman test** with $\alpha = 0.05$ to determine if one or more of the groups are significantly different. The teacher is expecting performance gains, so if a significant difference exists, use **one-tailed Wilcoxon signed-rank tests** to identify which groups are significantly different. Use the **Bonferroni** procedure to limit the type I error rate. Report your findings.
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+curlups_fr <- friedman.test(y = curlups$score, 
+                            groups = curlups$month, 
+                            blocks = curlups$participant)
+
+# wilcox.test(x = curlups$score[curlups$month == "baseline"],
+#             y = curlups$score[curlups$month == "month1"], alternative = "greater",
+#             paired = TRUE, conf.level = 0.05)
+# 
+# wilcox.test(x = curlups$score[curlups$month == "baseline"],
+#             y = curlups$score[curlups$month == "month2"], alternative = "greater",
+#             paired = TRUE, conf.level = 0.05)
+# 
+# wilcox.test(x = curlups$score[curlups$month == "month1"],
+#             y = curlups$score[curlups$month == "month2"], alternative = "greater",
+#             paired = TRUE, conf.level = 0.05)
+```
+
+# Comparing more than two unrelated samples
+
+## ONE
+
+A researcher conducted a study with *n = 15* participants to investigate strength gains from exercise. The participants were divided into three groups and given one of three treatments. Participants' strength gains were measured and ranked. The rankings are presented in `Table 6.8` below
+
+| I   | II  | III |
+|-----|-----|-----|
+| 7   | 13  | 12  |
+| 2   | 1   | 5   |
+| 4   | 7   | 16  |
+| 11  | 8   | 9   |
+| 15  | 3   | 14  |
+
+: Table 6.8
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+strength <- data.frame(
+  "treatment" = rep(c("I","II","III"), each = 5),
+  "str" = c(7,2,4,11,15, 13,1,7,8,3, 12,5,16,9,14)
+)
+```
+
+
+Use a **Kruskal-Wallis H test** with $\alpha = 0.05$ to determine if one or more of the groups were significantly different. If a significant difference exists, use a **two-tailed Mann-Whitney U test** or a **two-sample Kolmogorov-Smirnov test** to identify which groups are significantly different. Use the **Bonferroni** procedure to limit the type I error rate. Report your findings 
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+str_kw <- kruskal.test(x = strength$str, g = strength$treatment)
+```
+
+## TWO
+

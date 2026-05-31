@@ -540,8 +540,7 @@ strength <- data.frame(
 )
 ```
 
-
-Use a **Kruskal-Wallis H test** with $\alpha = 0.05$ to determine if one or more of the groups were significantly different. If a significant difference exists, use a **two-tailed Mann-Whitney U test** or a **two-sample Kolmogorov-Smirnov test** to identify which groups are significantly different. Use the **Bonferroni** procedure to limit the type I error rate. Report your findings 
+Use a **Kruskal-Wallis H test** with $\alpha = 0.05$ to determine if one or more of the groups were significantly different. If a significant difference exists, use a **two-tailed Mann-Whitney U test** or a **two-sample Kolmogorov-Smirnov test** to identify which groups are significantly different. Use the **Bonferroni** procedure to limit the type I error rate. Report your findings
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 str_kw <- kruskal.test(x = strength$str, g = strength$treatment)
@@ -549,3 +548,39 @@ str_kw <- kruskal.test(x = strength$str, g = strength$treatment)
 
 ## TWO
 
+A researcher investigated how physical attraction influences the perception among others of a person's effectiveness with difficult tasks. The photographs of 24 people were shown to a focus group. The group was asked to classify the photos into three groups: *very attractive, average* and *very unattractive*. Then, the group ranked the photographs according to their impressions of how capable they were of solving difficult problems. `Table 6.9` shows the classification and rankings of the people in the photos(1 = *most effective*, 24 = *least effective*)
+
+| very attractive | average | very unattractive |
+|-----------------|---------|-------------------|
+| 1               | 3       | 11                |
+| 2               | 4       | 15                |
+| 5               | 8       | 16                |
+| 6               | 9       | 18                |
+| 7               | 13      | 20                |
+| 10              | 14      | 21                |
+| 12              | 19      | 23                |
+| 17              | 22      | 24                |
+
+: Table 6.9
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+attraction <- data.frame(
+  "group" = rep(c("very_attractive", "average", "very_unattractive"), each = 8),
+  "ranking" = c(1,2,5,6,7,10,12,17,
+                3,4,8,9,13,14,19,22,
+                11,15,16,18,20,21,23,24)
+)
+```
+
+
+Use a **Kruskal-Wallis H test** with $\alpha = 0.05$ to determine if one or more of the groups are significantly different. If a significant difference exists, use **two-tailed Mann-Whitney U tests** to identify which groups are significantly different. Use the **Bonferroni** procedure to limit the type I error rate. Report you findings.
+
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+attraction_kw <- kruskal.test(x = attraction$ranking, g = attraction$group)
+```
+
+
+# Tests for Nominal scale data
+
+## ONE 

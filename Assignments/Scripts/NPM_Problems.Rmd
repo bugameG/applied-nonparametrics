@@ -7,6 +7,7 @@ output:
     toc: true
     toc_float: true
     theme: darkly
+    # code_folding: show
   word_document:
     toc: true
 ---
@@ -18,7 +19,7 @@ library(kableExtra)
 
 ```
 
-# 1.Comparing two related samples
+# 1. Comparing two related samples
 
 ## ONE
 
@@ -272,7 +273,7 @@ Analyze these results by what you consider the most appropriate parametric or no
 
 
 
-# 2.Comparing two unrelated samples
+# 2. Comparing two unrelated samples
 
 ## ONE
 
@@ -497,7 +498,7 @@ lab <- data.frame(
 )
 ```
 
-# 3.Comparing more than two related samples
+# 3. Comparing more than two related samples
 
 ## ONE
 
@@ -584,7 +585,7 @@ curlups_fr <- friedman.test(y = curlups$score,
 #             paired = TRUE, conf.level = 0.05)
 ```
 
-# 4.Comparing more than two unrelated samples
+# 4. Comparing more than two unrelated samples
 
 ## ONE
 
@@ -645,6 +646,6 @@ Use a **Kruskal-Wallis H test** with $\alpha = 0.05$ to determine if one or more
 attraction_kw <- kruskal.test(x = attraction$ranking, g = attraction$group)
 ```
 
-# 5.Tests for Nominal scale data
+# 5. Tests for Nominal scale data
 
 ## ONE

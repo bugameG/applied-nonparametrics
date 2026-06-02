@@ -18,7 +18,7 @@ library(kableExtra)
 
 ```
 
-# Comparing two related samples
+# 1.Comparing two related samples
 
 ## ONE
 
@@ -205,7 +205,74 @@ cat(
 )
 ```
 
-# Comparing two unrelated samples
+## SIX
+
+*(ANSM 4.3)* \$\\ \$
+
+Samples of cream from each of ten dairies (A to J) are each divided into two portions. One portion from each is sent to laboratory I, the other to Laboratory II, for bacterium counts. The counts (thousands bacteria ${ml}^{-1}$) are:
+
+| Dairy | Lab I | Lab II |
+|-------|-------|--------|
+| A     | 11.7  | 10.9   |
+| B     | 12.1  | 11.9   |
+| C     | 13.3  | 13.4   |
+| D     | 15.1  | 15.4   |
+| E     | 15.9  | 14.8   |
+| F     | 15.3  | 14.8   |
+| G     | 11.9  | 12.3   |
+| H     | 16.2  | 15.0   |
+| I     | 15.1  | 14.2   |
+| J     | 13.6  | 13.1   |
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+bacteria <- data.frame(
+  "dairy" = LETTERS[1:10],
+  "l1" = c(11.7,12.1,13.3,15.1,15.9,15.3,11.9,16.2,15.1,13.6),
+  "l2" = c(10.9,11.9,13.4,15.4,14.8,14.8,12.3,15,14.2,13.1)
+)
+```
+
+Use the **Wilcoxon signed-rank test** to assess the evidence for any consistent difference between laboratories for subsamples from the same dairy. Obtain also 95 and 99 percent confidence intervals for the mean and compare these with the intervals using the optimal method when normality is assumed
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+bacteria_wsr <- wilcox.test(x = bacteria$l1, y = bacteria$l2,
+                          paired = TRUE, exact = FALSE, conf.int = TRUE,
+                          alternative = "two.sided", conf.level = c(0.95))
+```
+
+## SEVEN
+
+*(ANSM 4.6)* \$\\ \$
+
+For each of nine matched pairs of students, one student is allocated to a series of lectures and the other to appropriate computer assisted learning (CAL) material. At the end of the course, the students are given the same examination paper. The marks achieved (out of 100) are:
+
+| pair | CAL | lectures |
+|------|-----|----------|
+| 1    | 50  | 25       |
+| 2    | 56  | 58       |
+| 3    | 51  | 65       |
+| 4    | 46  | 38       |
+| 5    | 88  | 91       |
+| 6    | 79  | 32       |
+| 7    | 81  | 31       |
+| 8    | 95  | 13       |
+| 9    | 73  | 49       |
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+lvc <- data.frame(
+  "pair" = 1:9,
+  "CAL" = c(50,56,51,46,88,79,81,95,73),
+  "lectures" = c(25,58,65,38,91,32,31,13,49)
+)
+```
+
+
+
+Analyze these results by what you consider the most appropriate parametric or nonparametric methods to determine whether or not they provide acceptable evidence that CAL materials lead to better examinations results
+
+
+
+# 2.Comparing two unrelated samples
 
 ## ONE
 
@@ -381,7 +448,7 @@ comp2 <- data.frame(
 # Sample size
 n_comp2 <- 25
 
-# Wilcoxon signed-rank hypothesis test for paired samples
+# Wilcoxon rank sum hypothesis test for paired samples
 comp2_wsr <- wilcox.test(x = comp2$score[comp2$method == "method1"], 
                          y = comp2$score[comp2$method == "method2"],
                       alternative = "two.sided", paired = FALSE)
@@ -430,7 +497,7 @@ lab <- data.frame(
 )
 ```
 
-# Comparing more than two related samples
+# 3.Comparing more than two related samples
 
 ## ONE
 
@@ -517,7 +584,7 @@ curlups_fr <- friedman.test(y = curlups$score,
 #             paired = TRUE, conf.level = 0.05)
 ```
 
-# Comparing more than two unrelated samples
+# 4.Comparing more than two unrelated samples
 
 ## ONE
 
@@ -572,15 +639,12 @@ attraction <- data.frame(
 )
 ```
 
-
 Use a **Kruskal-Wallis H test** with $\alpha = 0.05$ to determine if one or more of the groups are significantly different. If a significant difference exists, use **two-tailed Mann-Whitney U tests** to identify which groups are significantly different. Use the **Bonferroni** procedure to limit the type I error rate. Report you findings.
-
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 attraction_kw <- kruskal.test(x = attraction$ranking, g = attraction$group)
 ```
 
+# 5.Tests for Nominal scale data
 
-# Tests for Nominal scale data
-
-## ONE 
+## ONE

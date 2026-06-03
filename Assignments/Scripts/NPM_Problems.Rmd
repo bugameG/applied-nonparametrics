@@ -7,7 +7,7 @@ output:
     toc: true
     toc_float: true
     theme: darkly
-    # code_folding: show
+    code_folding: show
   word_document:
     toc: true
 ---
@@ -267,11 +267,86 @@ lvc <- data.frame(
 )
 ```
 
-
-
 Analyze these results by what you consider the most appropriate parametric or nonparametric methods to determine whether or not they provide acceptable evidence that CAL materials lead to better examinations results
 
+## EIGHT
 
+*(ANSM 4.11)* \$\\ \$
+
+To produce high-quality steel one of two hardening agents A, B may be added to molten metal. Hardness of steel varies from batch to batch, so to test the two agents, batches are sub-divided into two portions, for each batch agent A being added to one portion, agent B to the other. To compare hardness, sharpened specimens for each pair are used to make scratches on each other; that making the deeper scratch on the other is the harder specimen. For a subsample of 10 pairs, an expensive test is used to produce a hardness index. The higher the value of the index, the harder the steel. The indices recorded were:
+
+| batch no. | additive A | additive B |
+|-----------|------------|------------|
+| 1         | 22         | 27         |
+| 2         | 26         | 25         |
+| 3         | 29         | 31         |
+| 4         | 22         | 27         |
+| 5         | 31         | 29         |
+| 6         | 34         | 41         |
+| 7         | 31         | 32         |
+| 8         | 20         | 27         |
+| 9         | 33         | 32         |
+| 10        | 34         | 34         |
+
+```{r,echo = FALSE, message = FALSE, warning = FALSE}
+molten <- data.frame(
+  "batch"=1:10,
+  "A" = c(22,26,29,22,31,34,31,20,33,34),
+  "B" = c(27,25,31,27,29,41,32,27,32,34)
+)
+```
+
+Use an appropriate test to determine whether these data support the initial claim of equal hardness.
+
+```{r, echo = FALSE, warning = FALSE, message = FALSE}
+molten_wsr <- wilcox.test(x = molten$A, y = molten$B,
+                          alternative = "two.sided",exact = FALSE, paired = TRUE)
+```
+
+## NINE
+
+*(ANSM 4.12)* \$\\ \$
+
+On the day of the third round of the Open Golf Championship in 1987 before play started a television commentator said that conditions were such that the average scores of players were likely to be at least three higher than those for the second round. For a random sample of 10 of the 77 players participating in both rounds the scores were:
+
+| player | round 2 | round 3 |
+|--------|---------|---------|
+| A      | 73      | 72      |
+| B      | 73      | 79      |
+| C      | 74      | 79      |
+| D      | 66      | 77      |
+| E      | 71      | 83      |
+| F      | 73      | 78      |
+| G      | 68      | 70      |
+| H      | 72      | 78      |
+| I      | 73      | 78      |
+| J      | 72      | 77      |
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+golf <- data.frame(
+  "player" = LETTERS[1:10],
+  "r2" = c(73,73,74,66,71,73,68,72,73,72),
+  "r3" = c(72,79,79,77,83,78,70,78,78,77)
+)
+
+```
+
+Do these data support the commentator’s claim? Consider carefully whether a one- or two-tail test is appropriate
+
+
+
+## TEN
+
+*(ANSM 4.13)*
+
+## ELEVEN
+
+*(ANSM 4.15)*
+
+
+
+
+*****
 
 # 2. Comparing two unrelated samples
 
@@ -498,6 +573,9 @@ lab <- data.frame(
 )
 ```
 
+
+*****
+
 # 3. Comparing more than two related samples
 
 ## ONE
@@ -585,6 +663,10 @@ curlups_fr <- friedman.test(y = curlups$score,
 #             paired = TRUE, conf.level = 0.05)
 ```
 
+
+
+*****
+
 # 4. Comparing more than two unrelated samples
 
 ## ONE
@@ -645,6 +727,9 @@ Use a **Kruskal-Wallis H test** with $\alpha = 0.05$ to determine if one or more
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 attraction_kw <- kruskal.test(x = attraction$ranking, g = attraction$group)
 ```
+
+
+*****
 
 # 5. Tests for Nominal scale data
 

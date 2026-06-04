@@ -333,20 +333,41 @@ golf <- data.frame(
 
 Do these data support the commentator’s claim? Consider carefully whether a one- or two-tail test is appropriate
 
-
-
 ## TEN
 
 *(ANSM 4.13)*
+
+Pearson and Sprent (1968) gave data for hearing loss (in decibels below prescribed norms) at various frequencies. The data below show these losses for $10$ individuals aged between 46 and $54$ at frequencies of $0.125$ and $0.25\ kcs^-1$. A negative loss indicates hearing above the norm. Is there an indication of a different loss at the two frequencies
+
+| subject | $0.125\ kcs^-1$ | $0.25\ kcs^-1$ |
+|---------|-----------------|----------------|
+| A       | 2.5             | 2.5            |
+| B       | -7.5            | -5             |
+| C       | 11.25           | 6.35           |
+| D       | 7.5             | 6.25           |
+| E       | 10              | 7.5            |
+| F       | 5               | 3.75           |
+| G       | 7.5             | 1.25           |
+| H       | 2.5             | 0              |
+| I       | 5               | 2.5            |
+| J       | 8.75            | 5              |
+
+
+
 
 ## ELEVEN
 
 *(ANSM 4.15)*
 
+Scott, Smith and Jones (1977) give a table of estimates of the percentages
+of UK electors predicted to vote Conservative by two opinion polling
+organizations, A and B, in each month in the years 1965–70. For a random
+sample of 15 months during that period the paired percentages were:
 
 
 
-*****
+
+------------------------------------------------------------------------
 
 # 2. Comparing two unrelated samples
 
@@ -573,8 +594,7 @@ lab <- data.frame(
 )
 ```
 
-
-*****
+------------------------------------------------------------------------
 
 # 3. Comparing more than two related samples
 
@@ -663,9 +683,7 @@ curlups_fr <- friedman.test(y = curlups$score,
 #             paired = TRUE, conf.level = 0.05)
 ```
 
-
-
-*****
+------------------------------------------------------------------------
 
 # 4. Comparing more than two unrelated samples
 
@@ -728,8 +746,7 @@ Use a **Kruskal-Wallis H test** with $\alpha = 0.05$ to determine if one or more
 attraction_kw <- kruskal.test(x = attraction$ranking, g = attraction$group)
 ```
 
-
-*****
+------------------------------------------------------------------------
 
 # 5. Tests for Nominal scale data
 

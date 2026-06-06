@@ -26,7 +26,7 @@ library(kableExtra)
 A teacher wished to determine if providing a bilingual dictionary to students with limited English proficiency improves math test scores. A small class of students **(n = 10)** was selected. Students were given two math tests. Each test covered the same type of math content; however, students were provided a bilingual dictionary on the second test. The data in `Table 3.10` represent the students’ performance on each math test.
 
 | student | Math test without a billingual dictionary | Math test with a billingual dictionary |
-|------------------|----------------------------|--------------------------|
+|-------------------|----------------------------|--------------------------|
 | 1 | 30 | 39 |
 | 2 | 56 | 46 |
 | 3 | 48 | 37 |
@@ -208,7 +208,7 @@ cat(
 
 ## SIX
 
-*(ANSM 4.3)* \$\\ \$
+*(ANSM 4.3)*
 
 Samples of cream from each of ten dairies (A to J) are each divided into two portions. One portion from each is sent to laboratory I, the other to Laboratory II, for bacterium counts. The counts (thousands bacteria ${ml}^{-1}$) are:
 
@@ -243,7 +243,7 @@ bacteria_wsr <- wilcox.test(x = bacteria$l1, y = bacteria$l2,
 
 ## SEVEN
 
-*(ANSM 4.6)* \$\\ \$
+*(ANSM 4.6)*
 
 For each of nine matched pairs of students, one student is allocated to a series of lectures and the other to appropriate computer assisted learning (CAL) material. At the end of the course, the students are given the same examination paper. The marks achieved (out of 100) are:
 
@@ -271,7 +271,7 @@ Analyze these results by what you consider the most appropriate parametric or no
 
 ## EIGHT
 
-*(ANSM 4.11)* \$\\ \$
+*(ANSM 4.11)*
 
 To produce high-quality steel one of two hardening agents A, B may be added to molten metal. Hardness of steel varies from batch to batch, so to test the two agents, batches are sub-divided into two portions, for each batch agent A being added to one portion, agent B to the other. To compare hardness, sharpened specimens for each pair are used to make scratches on each other; that making the deeper scratch on the other is the harder specimen. For a subsample of 10 pairs, an expensive test is used to produce a hardness index. The higher the value of the index, the harder the steel. The indices recorded were:
 
@@ -305,7 +305,7 @@ molten_wsr <- wilcox.test(x = molten$A, y = molten$B,
 
 ## NINE
 
-*(ANSM 4.12)* \$\\ \$
+*(ANSM 4.12)*
 
 On the day of the third round of the Open Golf Championship in 1987 before play started a television commentator said that conditions were such that the average scores of players were likely to be at least three higher than those for the second round. For a random sample of 10 of the 77 players participating in both rounds the scores were:
 
@@ -376,9 +376,7 @@ Scott, Smith and Jones (1977) give a table of estimates of the percentages of UK
 | 48.4 | 45   |
 | 53.5 | 52.5 |
 
-Do these results indicate a significant tendency for one of the organizations
-to return higher percentages than the other? 
-Obtain an appropriate 95 percent confidence interval for any mean or median difference between predictions during the period covered
+Do these results indicate a significant tendency for one of the organizations to return higher percentages than the other? Obtain an appropriate 95 percent confidence interval for any mean or median difference between predictions during the period covered
 
 ------------------------------------------------------------------------
 
@@ -605,6 +603,94 @@ lab <- data.frame(
   "score" = c(15,23,9,12,18,22,17,20,
               8,15,10,13,17,5,18,7)
 )
+```
+
+## SIX
+
+*(ANSM 5.5)*
+
+An alloy is composed of zinc, copper and tin. It may be made at one of two temperatures H (higher) or L (lower). We wish to know if one temperature produces a harder alloy. A sample is taken from each of 9 batches at L and 7 at H. To arrange them in ascending order of hardness, all specimens are scraped against one another to see which makes a deeper scratch (a deeper scratch indicates a softer specimen). On this basis the specimens are ranked 1 (softest) to 16 (hardest) with the results given below. Should we reject the hypothesis that hardness is unaffected by temperature?
+
+| rank | temperature |
+|------|-------------|
+| 1    | H           |
+| 2    | L           |
+| 3    | H           |
+| 4    | H           |
+| 5    | H           |
+| 6    | L           |
+| 7    | H           |
+| 8    | L           |
+| 9    | L           |
+| 10   | H           |
+| 11   | H           |
+| 12   | L           |
+| 13   | L           |
+| 14   | L           |
+| 15   | L           |
+| 16   | L           |
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+metal_temp <- data.frame(
+  "temp" = c("H","L","H","H","H","L","H","L","L","H","H","L","L","L","L","L"),
+  "rank" = 1:16
+)
+
+metal_temp_wrs <- wilcox.test(x = metal_temp$rank[metal_temp$temp == "H"],
+                              y = metal_temp$rank[metal_temp$temp == "L"],
+                              alternative = "two.sided", exact = TRUE,
+                              paired = FALSE)
+```
+
+## SEVEN
+
+*(ANSM 5.9)*
+
+Hotpot stoves use a standard oven insulation. To test its effectiveness they take random samples from the production line and heat the ovens selected to $400^{0}C$, noting the time taken to cool to $350^{0}C$, after switching off. For a sample of 8 ovens the times in minutes are: $$15.7,\ 14.8,\ 14.2,\ 16.1,\ 15.3,\ 13.9,\ 17.2,\ 14.9$$ They decide to explore a cheaper insulation, and using this on a sample of 9 the times taken for the same temperature drop are: $$13.7,\ 14.1,\ 14.7,\ 15.4,\ 15.6,\ 14.4,\ 12.9,\ 15.1,\ 14.0$$ Are the firm justified in asserting there is no real evidence of a different rate of heat loss? Obtain a 95 per cent confidence limit for the difference in median heat loss with and without a normality assumption. Comment critically on any differences between your conclusions
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+hotpot <- data.frame(
+  "insulation" = c(rep("1", 8), rep("2", 9)),
+  "minutes" = c(15.7,14.8,14.2,16.1,15.3,13.9,17.2,14.9,
+                13.7,14.1,14.7,15.4,15.6,14.4,12.9,15.1,14)
+)
+
+hotpot_wrs <- wilcox.test(x = hotpot$minutes[hotpot$insulation == "1"],
+                          y = hotpot$minutes[hotpot$insulation == "2"],
+                          paired = FALSE, alternative = "two.sided",
+                          exact = FALSE, conf.int = TRUE)
+```
+
+## EIGHT
+
+*(ANSM 5.14)*
+
+A psychologist notes total time (in seconds) needed to perform a series of simple manual tasks for each of eight children with learning difficulties and seven children without learning difficulties. The times are:
+
+| without difficulties | with difficulties |
+|----------------------|-------------------|
+| 204                  | 243               |
+| 218                  | 228               |
+| 197                  | 261               |
+| 183                  | 202               |
+| 227                  | 343               |
+| 233                  | 242               |
+| 191                  | 220               |
+|                      | 239               |
+
+Use a Smirnov test to find whether the psychologist is justified in asserting these samples are likely to be from different populations.
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+diff <- data.frame(
+  "grp" = c(rep("without", 7), rep("with", 8)),
+  "time" = c(204,218,197,183,227,233,191,
+             243,228,261,202,343,242,220,239)
+)
+
+diff_ks <- ks.test(
+  x = diff$time[diff$grp == "with"],
+  y = diff$time[diff$grp == "without"], 
+  alternative = "two.sided", exact = TRUE)
 ```
 
 ------------------------------------------------------------------------

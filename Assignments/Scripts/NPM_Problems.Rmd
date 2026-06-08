@@ -723,9 +723,7 @@ dose <- data.frame(
 
 *(ANSM 5.22)*
 
-The following data are DMF scores for `34` male and `54` female first-year
-dental students. The DMF score is the total of the numbers of decayed +
-missing + filled teeth.
+The following data are DMF scores for `34` male and `54` female first-year dental students. The DMF score is the total of the numbers of decayed + missing + filled teeth.
 
 | gender | DMF |
 |--------|-----|
@@ -825,8 +823,7 @@ dental <- data.frame(
 )
 ```
 
-Use an asymptotic WMW test to determine whether the DMF score
-differs significantly between males and females.
+Use an asymptotic WMW test to determine whether the DMF score differs significantly between males and females.
 
 ```{r,echo = TRUE, message = FALSE, warning = FALSE}
 dental_wrs <- wilcox.test(
@@ -922,6 +919,113 @@ curlups_fr <- friedman.test(y = curlups$score,
 # wilcox.test(x = curlups$score[curlups$month == "month1"],
 #             y = curlups$score[curlups$month == "month2"], alternative = "greater",
 #             paired = TRUE, conf.level = 0.05)
+```
+
+## THREE
+
+*(ANSM 6.8)*
+
+At the beginning of a session, 12 names are read out in random order to 10 students. Four are names of prominent sporting personalities (Group A), four of national and international politicians (Group B) and four of local dignitaries (Group C). At the end of the session students are asked to recall as many of the names as possible. The numbers recalled were:
+
+| student | group A | group B | group C |
+|---------|---------|---------|---------|
+| I       | 3       | 2       | 0       |
+| II      | 1       | 1       | 0       |
+| III     | 2       | 3       | 1       |
+| IV      | 4       | 3       | 2       |
+| V       | 3       | 2       | 2       |
+| VI      | 1       | 0       | 0       |
+| VII     | 3       | 2       | 4       |
+| VIII    | 3       | 2       | 1       |
+| IX      | 2       | 2       | 0       |
+| X       | 4       | 3       | 2       |
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+remember <- data.frame(
+  "student" = rep(as.roman(1:10), each = 3) |> as.character(),
+  "grp" = rep(LETTERS[1:3], times = 10),
+  "count" = c(3,2,0,1,1,0,2,3,1,4,3,2,3,2,2,
+              1,0,0,3,2,4,3,2,1,2,2,0,4,3,2)
+)
+```
+
+Rank the data within each block (student) and use a Friedman test to assess
+evidence of a difference between recall rates for the three groups. In
+particular, is the recall rate for group B and/or group C significantly lower
+than that for group A? Carry out an ANOVA on the given data. Do the
+conclusions agree with the Friedman test? If not, why not?
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+remember_fr <- friedman.test(y = remember$count, groups = remember$grp,
+                             blocks = remember$student)
+```
+
+## FOUR
+
+*(ANSM 6.12)*
+
+Four share tipsters are each asked to predict on 10 randomly selected days
+whether the London FTSE Index (commonly known as Footsie) will rise or
+fall on the following day. If they predict correctly this is scored as 1, if
+incorrectly as 0. Do the scores below indicate differences in tipsters’
+ability to predict accurately?
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+ftse <- data.frame(
+  "day" = rep(1:10, each = 4),
+  "tipster" = rep(1:4, times = 10),
+  "outcome" = c(1L,1L,1L,1L,0L,1L,1L,1L,0L,1L,0L,0L,1L,1L,1L,0L,1L,0L,1L,0L,1L,1L,1L,1L,1L,1L,1L,1L,0L,0L,1L,1L,1L,0L,0L,0L,1L,0L,1L,1L)
+  );ftse
+```
+
+| day | tipster 1 | tipster 2 | tipster 3 | tipster 4 |
+|-----|-----------|-----------|-----------|-----------|
+| 1   | 1         | 1         | 1         | 1         |
+| 2   | 0         | 1         | 1         | 1         |
+| 3   | 0         | 1         | 0         | 0         |
+| 4   | 1         | 1         | 1         | 0         |
+| 5   | 1         | 0         | 1         | 0         |
+| 6   | 1         | 1         | 1         | 1         |
+| 7   | 1         | 1         | 1         | 1         |
+| 8   | 0         | 0         | 1         | 1         |
+| 9   | 1         | 0         | 0         | 0         |
+| 10  | 1         | 0         | 1         | 1         |
+
+## FIVE
+
+*(ANSM 6.14)*
+
+Berry (1987) gives the following data for numbers of premature ventricular
+contractions per hour for 12 patients with cardiac arrhythmias when each
+is treated with 3 drugs A, B, C
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+ventricle <- data.frame(
+"patient" = rep(1:12, each = 3),
+"drug" = rep(LETTERS[1:3], times = 12),
+"count" = c(170,7,0,19,1.4,6,187,205,18,10,0.3,1,216,0.2,22,49,33,30,7,37,3,474,9,5,0.4,0.6,0,1.4,63,36,27,145,26,29,0,0))
+```
+
+| patient | drug A | drug B | drug C |
+|---------|--------|--------|--------|
+| 1       | 170    | 7      | 0      |
+| 2       | 19     | 1.4    | 6      |
+| 3       | 187    | 205    | 18     |
+| 4       | 10     | 0.3    | 1      |
+| 5       | 216    | 0.2    | 22     |
+| 6       | 49     | 33     | 30     |
+| 7       | 7      | 37     | 3      |
+| 8       | 474    | 9      | 5      |
+| 9       | 0.4    | 0.6    | 0      |
+| 10      | 1.4    | 63     | 36     |
+| 11      | 27     | 145    | 26     |
+| 12      | 29     | 0      | 0      |
+
+Use a Friedman test to investigate differences in response between drugs.
+In particular, is there evidence of a difference between drug A and drug B?
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+ventricle_fr <- friedman.test(count~drug|patient, data = ventricle)
 ```
 
 ------------------------------------------------------------------------

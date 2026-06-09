@@ -949,11 +949,7 @@ remember <- data.frame(
 )
 ```
 
-Rank the data within each block (student) and use a Friedman test to assess
-evidence of a difference between recall rates for the three groups. In
-particular, is the recall rate for group B and/or group C significantly lower
-than that for group A? Carry out an ANOVA on the given data. Do the
-conclusions agree with the Friedman test? If not, why not?
+Rank the data within each block (student) and use a Friedman test to assess evidence of a difference between recall rates for the three groups. In particular, is the recall rate for group B and/or group C significantly lower than that for group A? Carry out an ANOVA on the given data. Do the conclusions agree with the Friedman test? If not, why not?
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 remember_fr <- friedman.test(y = remember$count, groups = remember$grp,
@@ -964,11 +960,7 @@ remember_fr <- friedman.test(y = remember$count, groups = remember$grp,
 
 *(ANSM 6.12)*
 
-Four share tipsters are each asked to predict on 10 randomly selected days
-whether the London FTSE Index (commonly known as Footsie) will rise or
-fall on the following day. If they predict correctly this is scored as 1, if
-incorrectly as 0. Do the scores below indicate differences in tipsters’
-ability to predict accurately?
+Four share tipsters are each asked to predict on 10 randomly selected days whether the London FTSE Index (commonly known as Footsie) will rise or fall on the following day. If they predict correctly this is scored as 1, if incorrectly as 0. Do the scores below indicate differences in tipsters’ ability to predict accurately?
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 ftse <- data.frame(
@@ -995,9 +987,7 @@ ftse <- data.frame(
 
 *(ANSM 6.14)*
 
-Berry (1987) gives the following data for numbers of premature ventricular
-contractions per hour for 12 patients with cardiac arrhythmias when each
-is treated with 3 drugs A, B, C
+Berry (1987) gives the following data for numbers of premature ventricular contractions per hour for 12 patients with cardiac arrhythmias when each is treated with 3 drugs A, B, C
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 ventricle <- data.frame(
@@ -1021,12 +1011,101 @@ ventricle <- data.frame(
 | 11      | 27     | 145    | 26     |
 | 12      | 29     | 0      | 0      |
 
-Use a Friedman test to investigate differences in response between drugs.
-In particular, is there evidence of a difference between drug A and drug B?
+Use a Friedman test to investigate differences in response between drugs. In particular, is there evidence of a difference between drug A and drug B?
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 ventricle_fr <- friedman.test(count~drug|patient, data = ventricle)
 ```
+
+## SIX
+
+*(ANSM 6.15)*
+
+Cohen (1983) gives data for numbers of births in Israel for each day in 1975. We give below data for numbers of births on each day in the 10th, 20th, 30th and 40th weeks of the year
+
+| week | day of the week | number of births |
+|------|-----------------|------------------|
+| 10   | Monday          | 108              |
+| 10   | Tuesday         | 106              |
+| 10   | Wednesday       | 100              |
+| 10   | Thurdsay        | 85               |
+| 10   | Friday          | 85               |
+| 10   | Saturday        | 92               |
+| 10   | Sunday          | 96               |
+| 20   | Monday          | 82               |
+| 20   | Tuesday         | 99               |
+| 20   | Wednesday       | 89               |
+| 20   | Thurdsay        | 125              |
+| 20   | Friday          | 74               |
+| 20   | Saturday        | 85               |
+| 20   | Sunday          | 100              |
+| 30   | Monday          | 96               |
+| 30   | Tuesday         | 101              |
+| 30   | Wednesday       | 108              |
+| 30   | Thursday        | 103              |
+| 30   | Friday          | 108              |
+| 30   | Saturday        | 96               |
+| 30   | Sunday          | 110              |
+| 40   | Monday          | 124              |
+| 40   | Tuesday         | 106              |
+| 40   | Wednesday       | 111              |
+| 40   | Thursday        | 115              |
+| 40   | Friday          | 99               |
+| 40   | Saturday        | 96               |
+| 40   | Sunday          | 111              |
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+births <- data.frame(
+"week" = rep(c(10,20,30,40), each = 7),
+"day" = rep(c("Monday","Tuesday","Wednesday","Thursday","Friday","Saturday", "Sunday"), 4),
+"freq" = c(108,106,100,85,85,92,96,
+           82,99,89,125,74,85,100,
+           96,101,108,103,108,96,110,
+           124,106,111,115,99,96,111)
+)
+```
+
+Perform Friedman analyses to determine whether the data indicate a difference in birth rate between days of the week that shows consistency over the four selected weeks
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+births_fr <- friedman.test(freq~week|day, data = births);births_fr
+```
+
+## SEVEN
+
+*(ANSM 6.16)*
+
+Snee (1985) gives data on average liver weights per bird for chicks given three levels of growth promoter (none, low, high). Blocks correspond to different bird houses. Use a Friedman test to see if there is evidence of an effect of growth promoter
+
+| house | none | low  | high |
+|-------|------|------|------|
+| 1     | 3.93 | 3.99 | 4.08 |
+| 2     | 3.78 | 3.96 | 3.94 |
+| 3     | 3.88 | 3.96 | 4.02 |
+| 4     | 3.93 | 4.03 | 4.06 |
+| 5     | 3.84 | 4.10 | 3.94 |
+| 6     | 3.75 | 4.02 | 4.09 |
+| 7     | 3.98 | 4.06 | 4.17 |
+| 8     | 3.84 | 3.92 | 4.12 |
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+liver <- data.frame(
+"house" = rep(1:8, times = 3),
+"level" = rep(c("none", "low", "high"), each = 8),
+"weight" = c(3.93,3.78,3.88,3.93,3.84,3.75,3.98,3.84,
+               3.99,3.96,3.96,4.03,4.10,4.02,4.06,3.92,
+               4.08,3.94,4.02,4.06,3.94,4.09,4.17,4.12)
+)
+
+liver_fr <- friedman.test(weight~level|house, data = liver)
+```
+
+Since dose levels are ordered, a Page test is appropriate. Try this also
+
+```{r, echo = FALSE,message = FALSE, warning = FALSE}
+liver_jt <- JonckheereTerpstraTest(x=liver$weight,g=liver$level)
+```
+
 
 ------------------------------------------------------------------------
 

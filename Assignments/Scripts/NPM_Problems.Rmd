@@ -1103,9 +1103,8 @@ liver_fr <- friedman.test(weight~level|house, data = liver)
 Since dose levels are ordered, a Page test is appropriate. Try this also
 
 ```{r, echo = FALSE,message = FALSE, warning = FALSE}
-liver_jt <- JonckheereTerpstraTest(x=liver$weight,g=liver$level)
+liver_jt <- JonckheereTerpstraTest(weight~level, data = liver, alternative = "two.sided")
 ```
-
 
 ------------------------------------------------------------------------
 
@@ -1170,8 +1169,67 @@ Use a **Kruskal-Wallis H test** with $\alpha = 0.05$ to determine if one or more
 attraction_kw <- kruskal.test(x = attraction$ranking, g = attraction$group)
 ```
 
+## THREE
+
+*(ANSM 6.17)*
+
+Lubischew (1962) gives measurements of maximum head width in units of 0.01 mm for three species of Chaetocnema. Part of his data is given below. Use a Kruskal–Wallis test to see if there is a species difference in head widths
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+chaetocnema <- data.frame(
+"species" = c(rep(1, 10), rep(2,11), rep(3, 8)),
+"hwidth" = c(53,50,52,50,49,47,54,51,52,57,
+             49,49,47,54,43,51,49,51,50,46,49,
+             58,51,45,53,49,51,50,51)
+)
+```
+
+| species 1 | species 2 | species 3 |
+|-----------|-----------|-----------|
+| 53        | 49        | 58        |
+| 50        | 49        | 51        |
+| 52        | 47        | 45        |
+| 50        | 54        | 53        |
+| 49        | 43        | 49        |
+| 47        | 51        | 51        |
+| 54        | 49        | 50        |
+| 51        | 51        | 51        |
+| 52        | 50        |           |
+| 57        | 46        |           |
+|           | 49        |           |
+
+```{r, echo = TRUE, message = FALSE, warning = FALSE}
+chaetocnema_kr <- kruskal.test(hwidth~species, data = chaetocnema)
+```
+
 ------------------------------------------------------------------------
 
 # 5. Tests for Nominal scale data
 
 ## ONE
+
+A researcher wishes to determine if there is an association between the level of a teacher’s education and his/her job satisfaction. He surveyed 158 teachers. The frequencies of the corresponding results are displayed in `Table 8.19`
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+tsatisfaction <- matrix(
+c(60,41,19,10,13,15), byrow = TRUE, nrow = 2, 
+dimnames = list(c("satisfied", "unsatisfied"),
+                c("Bachelor's degree", "Master's degree", "Post-Master's degree")) 
+)
+# |> addmargins()
+```
+
+
+|             | Bachelor's degree | Master's degree | Post-Master's degree |
+|-------------|-------------------|-----------------|----------------------|
+| satisfied   | 60                | 41              | 19                   |
+| unsatisfied | 10                | 13              | 15                   |
+
+: Table 8.19
+
+First, use a \({\chi}^{2}\)-test for independence with \(\alpha = 0.05\)  to determine if there is an association between level of education and job satisfaction. Then, determine the effect size for the association. Report your findings
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+tsatisfaction_chi <- chisq.test(tsatisfaction)
+```
+

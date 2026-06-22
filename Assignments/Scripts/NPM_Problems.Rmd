@@ -1274,8 +1274,6 @@ c(course_satisfaction[course_satisfaction$gender=="male" & course_satisfaction$s
 course_safisfaction_chi <- chisq.test(course_matrix)
 ```
 
-
-
 ## THREE
 
 *(ANSM 10.11)*
@@ -1290,31 +1288,24 @@ voters <- matrix(
                   c("30 or under", "31-40", "41-55", "56 or over")));voters
 ```
 
-
-|                      |                  |           |           |                |
-|----------------------|------------------|-----------|-----------|----------------|
-|                      | **30 or under**  | **31-40** | **41-55** | **56 or over** |
-| **Conservative**     | 31               | 32        | 39        | 34             |
-| **Liberal Democrat** | 16               | 19        | 25        | 31             |
-| **Labour**           | 36               | 27        | 58        | 52             |
+|                      |                 |           |           |                |
+|----------------|--------------|--------------|--------------|--------------|
+|                      | **30 or under** | **31-40** | **41-55** | **56 or over** |
+| **Conservative**     | 31              | 32        | 39        | 34             |
+| **Liberal Democrat** | 16              | 19        | 25        | 31             |
+| **Labour**           | 36              | 27        | 58        | 52             |
 
 Is there evidence of an association between political affiliation and age? It is generally (though not universally) accepted that the Conservative, Liberal Democrat and Labour parties represent an ordering of right, middle and left in the political spectrum
-
-
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 voters_chi <- chisq.test(voters)
 ```
 
-
 ## FOUR
 
 *(ANSM 10.12)*
 
-Agresti (1984) quotes the following data on cross-classification o f
-attitudes towards abortion and amounts of schooling based on the US
-General Social Survey, 1972. Test these data for evidence of association
-between attitudes and educational background
+Agresti (1984) quotes the following data on cross-classification o f attitudes towards abortion and amounts of schooling based on the US General Social Survey, 1972. Test these data for evidence of association between attitudes and educational background
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 abortion <- matrix(
@@ -1326,17 +1317,110 @@ abortion <- matrix(
 )
 ```
 
-
 # 6. Variable comparison
 
 ## ONE
 
+*(ANSM 7.6)*
 
+A china manufacturer is investigating market response to seven designs of dinner set. The main markets are the *British* and *American*. To get some idea of preferences in the two markets a survey of 100 British and 100 American women is carried out and each woman is asked to rank the designs in order of preference from 1 for favorite to 7 for least acceptable. For each country the 100 rank scores for each design is totalled. The design with the lowest total is assigned rank 1, that with the next lowest total rank 2, and so on. Overall rankings for each country are
 
+| Design | British rank | American rank |
+|--------|--------------|---------------|
+| A      | 1            | 3             |
+| B      | 2            | 4             |
+| C      | 3            | 1             |
+| D      | 4            | 5             |
+| E      | 5            | 2             |
+| F      | 6            | 7             |
+| G      | 7            | 6             |
 
+Calculate the Spearman and Kendall correlation coefficients. Is there
+evidence of a positive association between orders of preference
 
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+dinner_set <- data.frame(
+  "country" = c(rep("UK",7),rep("US",7),rep("CAN",7),rep("AUS",7)),
+  "design" = rep(LETTERS[1:7], 4),
+  "rank" = c(1,2,3,4,5,6,7,3,4,1,5,2,7,6,5,3,2,4,1,6,7,3,1,4,2,7,6,5)
+)
+```
 
+## TWO
 
+*(ANSM 7.7)*
 
+The manufacturer above later decides to assess preferences in the
+*Canadian* and *Australian* markets by a similar method. Calculate the Spearman and Kendall correlation and coefficients. Is there evidence of a positive association between orders of preference.
 
+## THREE
 
+*(ANSM 7.8)*
+
+Perform an appropriate analysis of the ranked data for all four countries in
+Exercises 7.6 and 7.7 to assess the evidence for any overall concordance
+
+## FOUR
+
+*(ANSM 7.9)*
+
+In a pharmacological experiment involving β-blocking agents, Sweeting
+(1982) recorded for a control group of dogs, cardiac oxygen consumption
+(MVO) and left ventricular pressure (LVP). Calculate the Kendall and
+Spearman correlation coefficients. Is there evidence of correlation
+
+| Dog | MVO | LVP |
+|-----|-----|-----|
+| A   | 78  | 32  |
+| B   | 92  | 33  |
+| C   | 116 | 45  |
+| D   | 90  | 30  |
+| E   | 106 | 38  |
+| F   | 78  | 24  |
+| G   | 99  | 44  |
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+oxygen <- data.frame(
+  "dog" = rep(LETTERS[1:7], 2),
+  "control" = c(rep("mvo",7), rep("lvp",7)),
+  "measure" = c(78,92,116,90,106,78,99,
+                32,33,45,30,38,24,44)
+)
+```
+
+## FIVE
+
+*(ANSM 7.10)*
+
+Bardsley and Chambers (1984) gave numbers of beef cattle and sheep on
+19 large farms in a region. Is there evidence of correlation
+
+| cattle | sheep |
+|--------|-------|
+| 41     | 4716  |
+| 0      | 4605  |
+| 42     | 4951  |
+| 15     | 2745  |
+| 47     | 6592  |
+| 0      | 8934  |
+| 0      | 9165  |
+| 0      | 5917  |
+| 56     | 2618  |
+| 67     | 1105  |
+| 707    | 150   |
+| 368    | 2005  |
+| 231    | 3222  |
+| 104    | 7150  |
+| 132    | 8658  |
+| 200    | 6304  |
+| 172    | 1800  |
+| 146    | 5270  |
+| 0      | 1537  |
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+farm <- data.frame(
+  "f" = 1:19,
+  "cattle" = c(41,0,42,15,47,0,0,0,56,67,707,368,231,104,132,200,172,146,0),
+  "sheep" = c(4716,4605,4951,2745,6592,8934,9165,5917,2618,1105,150,2005,3222,7150,8658,6304,1800,5270,1537)
+)
+```

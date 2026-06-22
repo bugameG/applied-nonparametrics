@@ -8,8 +8,6 @@ output:
     toc_float: true
     theme: darkly
     code_folding: show
-  word_document:
-    toc: true
 ---
 
 ```{r setup, include=FALSE}
@@ -1219,7 +1217,6 @@ dimnames = list(c("satisfied", "unsatisfied"),
 # |> addmargins()
 ```
 
-
 |             | Bachelor's degree | Master's degree | Post-Master's degree |
 |-------------|-------------------|-----------------|----------------------|
 | satisfied   | 60                | 41              | 19                   |
@@ -1227,9 +1224,119 @@ dimnames = list(c("satisfied", "unsatisfied"),
 
 : Table 8.19
 
-First, use a \({\chi}^{2}\)-test for independence with \(\alpha = 0.05\)  to determine if there is an association between level of education and job satisfaction. Then, determine the effect size for the association. Report your findings
+First, use a ${\chi}^{2}$-test for independence with $\alpha = 0.05$ to determine if there is an association between level of education and job satisfaction. Then, determine the effect size for the association. Report your findings
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 tsatisfaction_chi <- chisq.test(tsatisfaction)
 ```
+
+## TWO
+
+A professor gave her class a 10-item survey to determine the students’ satisfaction with the course. Survey question responses were measured using a five-point Likert scale. The survey had a score range from +20 to −20. Table 8.20 shows the scores of the students in a class of 13 students who rated the professor
+
+| gender | score | satisfaction |
+|--------|-------|--------------|
+| male   | +12   | \+           |
+| male   | +6    | \+           |
+| male   | -5    | \-           |
+| male   | -10   | \-           |
+| male   | +17   | \+           |
+| male   | +4    | \+           |
+| female | -2    | \-           |
+| female | -13   | \-           |
+| female | +10   | \+           |
+| female | -8    | \-           |
+| female | -11   | \-           |
+| female | -4    | \-           |
+| female | -14   | \-           |
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+course_satisfaction <- data.frame(
+  "gender"=c(rep("male",6),rep("female", 7)),
+  "satisfaction"=c("p","p","n","n","p","p","n","n","p","n","n","n","n")
+)
+```
+
+Use a Fisher exact test with $\alpha =  0.05$ to determine if there is an association between gender and course satisfaction of the professor’s class. Then, determine the effect size for the association. Report your findings.
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+course_matrix <- matrix(
+c(course_satisfaction[course_satisfaction$gender=="male" & course_satisfaction$satisfaction == "p",] |> nrow(),
+ course_satisfaction[course_satisfaction$gender=="male" & course_satisfaction$satisfaction == "n",] |> nrow(),
+ course_satisfaction[course_satisfaction$gender=="female" & course_satisfaction$satisfaction == "p",] |> nrow(),
+ course_satisfaction[course_satisfaction$gender=="female" & course_satisfaction$satisfaction == "n",] |> nrow()
+    ), 
+  byrow = TRUE, ncol = 2, nrow = 2, 
+  dimnames = list(c("male", "female"),
+                  c("positive", "negative"))
+)
+
+course_safisfaction_chi <- chisq.test(course_matrix)
+```
+
+
+
+## THREE
+
+*(ANSM 10.11)*
+
+In an English parliamentary electoral constituency a random sample of 400 voters are classified by age and political affiliation as follows
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+voters <- matrix(
+  c(31,32,39,34,16,19,25,31,36,27,58,52),
+  byrow = TRUE, ncol = 4, nrow = 3,
+  dimnames = list(c("Conservative","Liberal Democrat","Labour"),
+                  c("30 or under", "31-40", "41-55", "56 or over")));voters
+```
+
+
+|                      |                  |           |           |                |
+|----------------------|------------------|-----------|-----------|----------------|
+|                      | **30 or under**  | **31-40** | **41-55** | **56 or over** |
+| **Conservative**     | 31               | 32        | 39        | 34             |
+| **Liberal Democrat** | 16               | 19        | 25        | 31             |
+| **Labour**           | 36               | 27        | 58        | 52             |
+
+Is there evidence of an association between political affiliation and age? It is generally (though not universally) accepted that the Conservative, Liberal Democrat and Labour parties represent an ordering of right, middle and left in the political spectrum
+
+
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+voters_chi <- chisq.test(voters)
+```
+
+
+## FOUR
+
+*(ANSM 10.12)*
+
+Agresti (1984) quotes the following data on cross-classification o f
+attitudes towards abortion and amounts of schooling based on the US
+General Social Survey, 1972. Test these data for evidence of association
+between attitudes and educational background
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+abortion <- matrix(
+  c(209,101,237,151,126,426,16,21,138),
+  byrow = TRUE, nrow = 3, ncol = 3,
+  dimnames = list(
+    c("Less than High school","High school","More than high school"),
+    c("Disapprove", "Neutral", "Approve"))
+)
+```
+
+
+# 6. Variable comparison
+
+## ONE
+
+
+
+
+
+
+
+
+
 

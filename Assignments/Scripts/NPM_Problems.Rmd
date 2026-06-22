@@ -7,13 +7,13 @@ output:
     toc: true
     toc_float: true
     theme: darkly
-    code_folding: show
 ---
 
 ```{r setup, include=FALSE}
 library(tidyverse)
 library(DescTools)
 library(kableExtra)
+library(broom)
 
 ```
 
@@ -823,7 +823,7 @@ dental <- data.frame(
 
 Use an asymptotic WMW test to determine whether the DMF score differs significantly between males and females.
 
-```{r,echo = TRUE, message = FALSE, warning = FALSE}
+```{r,echo = FALSE, message = FALSE, warning = FALSE}
 dental_wrs <- wilcox.test(
   x = dental$score[dental$grp == "m"],
   y = dental$score[dental$grp == "f"], paired = FALSE,
@@ -965,7 +965,7 @@ ftse <- data.frame(
   "day" = rep(1:10, each = 4),
   "tipster" = rep(1:4, times = 10),
   "outcome" = c(1L,1L,1L,1L,0L,1L,1L,1L,0L,1L,0L,0L,1L,1L,1L,0L,1L,0L,1L,0L,1L,1L,1L,1L,1L,1L,1L,1L,0L,0L,1L,1L,1L,0L,0L,0L,1L,0L,1L,1L)
-  );ftse
+  )
 ```
 
 | day | tipster 1 | tipster 2 | tipster 3 | tipster 4 |
@@ -1196,7 +1196,7 @@ chaetocnema <- data.frame(
 | 57        | 46        |           |
 |           | 49        |           |
 
-```{r, echo = TRUE, message = FALSE, warning = FALSE}
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
 chaetocnema_kr <- kruskal.test(hwidth~species, data = chaetocnema)
 ```
 
@@ -1214,7 +1214,7 @@ c(60,41,19,10,13,15), byrow = TRUE, nrow = 2,
 dimnames = list(c("satisfied", "unsatisfied"),
                 c("Bachelor's degree", "Master's degree", "Post-Master's degree")) 
 )
-# |> addmargins()
+
 ```
 
 |             | Bachelor's degree | Master's degree | Post-Master's degree |
@@ -1226,9 +1226,26 @@ dimnames = list(c("satisfied", "unsatisfied"),
 
 First, use a ${\chi}^{2}$-test for independence with $\alpha = 0.05$ to determine if there is an association between level of education and job satisfaction. Then, determine the effect size for the association. Report your findings
 
+$${H}_{0}:\text{Level of education and job satisfaction are independent}
+$$
+$${H}_{1}:\text{Level of education and job satisfaction are associated}$$
+
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
-tsatisfaction_chi <- chisq.test(tsatisfaction)
+# Chi-square approximation
+tsatisfaction_chi <- chisq.test(tsatisfaction, 
+                                correct = FALSE)
+
+cat(
+  paste0("Test of independence (Chi-Square approximation)","\n",
+        "------------------------------------------------","\n",
+        "p-value: ", round(tsatisfaction_chi$p.value,4), "\n",
+        "Decision: ", ifelse(tsatisfaction_chi$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"))
+)
 ```
+> In conclusion, education level and job satisfaction are statistically associative at the 5% significance level. 
+
 
 ## TWO
 
@@ -1259,6 +1276,9 @@ course_satisfaction <- data.frame(
 
 Use a Fisher exact test with $\alpha =  0.05$ to determine if there is an association between gender and course satisfaction of the professor’s class. Then, determine the effect size for the association. Report your findings.
 
+$${H}_{0}: \text{Gender and course satisfaction are independent}$$
+$${H}_{0}: \text{Gender and course satisfaction are associated}$$
+
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 course_matrix <- matrix(
 c(course_satisfaction[course_satisfaction$gender=="male" & course_satisfaction$satisfaction == "p",] |> nrow(),
@@ -1271,7 +1291,17 @@ c(course_satisfaction[course_satisfaction$gender=="male" & course_satisfaction$s
                   c("positive", "negative"))
 )
 
-course_safisfaction_chi <- chisq.test(course_matrix)
+# Fisher's Excat Test
+course_safisfaction_chi <- fisher.test(course_matrix)
+
+cat(
+  paste0("Test of independence (Fisher's Exact Test)","\n",
+        "------------------------------------------------","\n",
+        "p-value: ", round(course_safisfaction_chi$p.value,4), "\n",
+        "Decision: ", ifelse(course_safisfaction_chi$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"))
+)
 ```
 
 ## THREE
@@ -1285,7 +1315,7 @@ voters <- matrix(
   c(31,32,39,34,16,19,25,31,36,27,58,52),
   byrow = TRUE, ncol = 4, nrow = 3,
   dimnames = list(c("Conservative","Liberal Democrat","Labour"),
-                  c("30 or under", "31-40", "41-55", "56 or over")));voters
+                  c("30 or under", "31-40", "41-55", "56 or over")))
 ```
 
 |                      |                 |           |           |                |
@@ -1323,6 +1353,8 @@ abortion <- matrix(
 
 *(ANSM 7.6)*
 
+### a
+
 A china manufacturer is investigating market response to seven designs of dinner set. The main markets are the *British* and *American*. To get some idea of preferences in the two markets a survey of 100 British and 100 American women is carried out and each woman is asked to rank the designs in order of preference from 1 for favorite to 7 for least acceptable. For each country the 100 rank scores for each design is totalled. The design with the lowest total is assigned rank 1, that with the next lowest total rank 2, and so on. Overall rankings for each country are
 
 | Design | British rank | American rank |
@@ -1346,21 +1378,21 @@ dinner_set <- data.frame(
 )
 ```
 
-## TWO
+### b
 
 *(ANSM 7.7)*
 
 The manufacturer above later decides to assess preferences in the
 *Canadian* and *Australian* markets by a similar method. Calculate the Spearman and Kendall correlation and coefficients. Is there evidence of a positive association between orders of preference.
 
-## THREE
+### c
 
 *(ANSM 7.8)*
 
 Perform an appropriate analysis of the ranked data for all four countries in
 Exercises 7.6 and 7.7 to assess the evidence for any overall concordance
 
-## FOUR
+## TWO
 
 *(ANSM 7.9)*
 
@@ -1388,7 +1420,7 @@ oxygen <- data.frame(
 )
 ```
 
-## FIVE
+## THREE
 
 *(ANSM 7.10)*
 

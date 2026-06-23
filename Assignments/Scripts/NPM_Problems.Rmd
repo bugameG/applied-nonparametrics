@@ -7,6 +7,8 @@ output:
     toc: true
     toc_float: true
     theme: darkly
+  pdf_document:
+    toc: true
 ---
 
 ```{r setup, include=FALSE}
@@ -1227,8 +1229,7 @@ dimnames = list(c("satisfied", "unsatisfied"),
 First, use a ${\chi}^{2}$-test for independence with $\alpha = 0.05$ to determine if there is an association between level of education and job satisfaction. Then, determine the effect size for the association. Report your findings
 
 $${H}_{0}:\text{Level of education and job satisfaction are independent}
-$$
-$${H}_{1}:\text{Level of education and job satisfaction are associated}$$
+$$ $${H}_{1}:\text{Level of education and job satisfaction are associated}$$
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 # Chi-square approximation
@@ -1244,8 +1245,8 @@ cat(
                              no = "Fail to reject the null hypothesis"))
 )
 ```
-> In conclusion, education level and job satisfaction are statistically associative at the 5% significance level. 
 
+> In conclusion, education level and job satisfaction are statistically associative at the 5% significance level.
 
 ## TWO
 
@@ -1276,8 +1277,7 @@ course_satisfaction <- data.frame(
 
 Use a Fisher exact test with $\alpha =  0.05$ to determine if there is an association between gender and course satisfaction of the professor’s class. Then, determine the effect size for the association. Report your findings.
 
-$${H}_{0}: \text{Gender and course satisfaction are independent}$$
-$${H}_{0}: \text{Gender and course satisfaction are associated}$$
+$${H}_{0}: \text{Gender and course satisfaction are independent}$$ $${H}_{0}: \text{Gender and course satisfaction are associated}$$
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 course_matrix <- matrix(
@@ -1304,6 +1304,8 @@ cat(
 )
 ```
 
+> There exists insufficient evidence against the null hypothesis of independence between gender and course satisfaction at 5% significance level
+
 ## THREE
 
 *(ANSM 10.11)*
@@ -1319,7 +1321,7 @@ voters <- matrix(
 ```
 
 |                      |                 |           |           |                |
-|----------------|--------------|--------------|--------------|--------------|
+|---------------|---------------|---------------|---------------|---------------|
 |                      | **30 or under** | **31-40** | **41-55** | **56 or over** |
 | **Conservative**     | 31              | 32        | 39        | 34             |
 | **Liberal Democrat** | 16              | 19        | 25        | 31             |
@@ -1328,14 +1330,33 @@ voters <- matrix(
 Is there evidence of an association between political affiliation and age? It is generally (though not universally) accepted that the Conservative, Liberal Democrat and Labour parties represent an ordering of right, middle and left in the political spectrum
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
-voters_chi <- chisq.test(voters)
+# Chi-Square approximation (3x4 table)
+voters_chi <- chisq.test(voters, correct = FALSE)
+
+cat(
+  paste0("Test of independence (Chi-Square approximation)","\n",
+        "------------------------------------------------","\n",
+        "p-value: ", round(voters_chi$p.value,4), "\n",
+        "Decision: ", ifelse(voters_chi$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"))
+)
+
 ```
+
+> Political affiliation and age are independent of each other at the 5% level
 
 ## FOUR
 
 *(ANSM 10.12)*
 
-Agresti (1984) quotes the following data on cross-classification o f attitudes towards abortion and amounts of schooling based on the US General Social Survey, 1972. Test these data for evidence of association between attitudes and educational background
+Agresti (1984) quotes the following data on cross-classification of attitudes towards abortion and amounts of schooling based on the US General Social Survey, 1972. Test these data for evidence of association between attitudes and educational background
+
+|                            | Disapprove | Neutral | Approve |
+|----------------------------|------------|---------|---------|
+| **Less than high school**  | 209        | 101     | 237     |
+| **High school**            | 151        | 126     | 426     |
+| **More than high school**  | 16         | 21      | 138     |
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 abortion <- matrix(
@@ -1345,7 +1366,20 @@ abortion <- matrix(
     c("Less than High school","High school","More than high school"),
     c("Disapprove", "Neutral", "Approve"))
 )
+
+# Chi-Square approximation (3x3 table)
+abortion_chi <- chisq.test(abortion, correct = FALSE)
+
+cat(
+  paste0("Test of independence (Chi-Square approximation)","\n",
+        "------------------------------------------------","\n",
+        "p-value: ", round(abortion_chi$p.value,4), "\n",
+        "Decision: ", ifelse(abortion_chi$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"))
+)
 ```
+> At the 5% significance level, there exists sufficient evidence in favor of the claim of present association between subjects' attitudes towards abortion and educational background
 
 # 6. Variable comparison
 
@@ -1367,8 +1401,7 @@ A china manufacturer is investigating market response to seven designs of dinner
 | F      | 6            | 7             |
 | G      | 7            | 6             |
 
-Calculate the Spearman and Kendall correlation coefficients. Is there
-evidence of a positive association between orders of preference
+Calculate the Spearman and Kendall correlation coefficients. Is there evidence of a positive association between orders of preference
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 dinner_set <- data.frame(
@@ -1376,30 +1409,60 @@ dinner_set <- data.frame(
   "design" = rep(LETTERS[1:7], 4),
   "rank" = c(1,2,3,4,5,6,7,3,4,1,5,2,7,6,5,3,2,4,1,6,7,3,1,4,2,7,6,5)
 )
+
+# A. USA vs UK
+## Spearman rank correlation coefficient
+dinner_set_UKUS_spearman <- cor.test(x = dinner_set$rank[dinner_set$country == "UK"],
+                                     y = dinner_set$rank[dinner_set$country == "US"],
+                                     method = "spearman", exact = TRUE)
+
+## Kendall's correlation coefficient
+dinner_set_UKUS_kendall <- cor.test(x = dinner_set$rank[dinner_set$country == "UK"],
+                                     y = dinner_set$rank[dinner_set$country == "US"],
+                                     method = "kendall", exact = TRUE)
+
+
+
+cat(
+  paste0("Spearman's correlation","\n",
+        "--------------------------","\n",
+        "value: ", round(dinner_set_UKUS_spearman$estimate,4), "\n",
+        "p-value: ", round(dinner_set_UKUS_spearman$p.value,4), "\n",
+        "Decision: ", ifelse(dinner_set_UKUS_spearman$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"),
+        "\n","\n",
+        "====================================================","\n","\n",
+        "Kendall's correlation","\n",
+        "--------------------------","\n",
+        "value: ", round(dinner_set_UKUS_kendall$estimate,4), "\n",
+        "p-value: ", round(dinner_set_UKUS_kendall$p.value,4), "\n",
+        "Decision: ", ifelse(dinner_set_UKUS_kendall$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis")
+        )
+)
+
+
 ```
 
 ### b
 
 *(ANSM 7.7)*
 
-The manufacturer above later decides to assess preferences in the
-*Canadian* and *Australian* markets by a similar method. Calculate the Spearman and Kendall correlation and coefficients. Is there evidence of a positive association between orders of preference.
+The manufacturer above later decides to assess preferences in the *Canadian* and *Australian* markets by a similar method. Calculate the Spearman and Kendall correlation and coefficients. Is there evidence of a positive association between orders of preference.
 
 ### c
 
 *(ANSM 7.8)*
 
-Perform an appropriate analysis of the ranked data for all four countries in
-Exercises 7.6 and 7.7 to assess the evidence for any overall concordance
+Perform an appropriate analysis of the ranked data for all four countries in Exercises 7.6 and 7.7 to assess the evidence for any overall concordance
 
 ## TWO
 
 *(ANSM 7.9)*
 
-In a pharmacological experiment involving β-blocking agents, Sweeting
-(1982) recorded for a control group of dogs, cardiac oxygen consumption
-(MVO) and left ventricular pressure (LVP). Calculate the Kendall and
-Spearman correlation coefficients. Is there evidence of correlation
+In a pharmacological experiment involving β-blocking agents, Sweeting (1982) recorded for a control group of dogs, cardiac oxygen consumption (MVO) and left ventricular pressure (LVP). Calculate the Kendall and Spearman correlation coefficients. Is there evidence of correlation
 
 | Dog | MVO | LVP |
 |-----|-----|-----|
@@ -1424,8 +1487,7 @@ oxygen <- data.frame(
 
 *(ANSM 7.10)*
 
-Bardsley and Chambers (1984) gave numbers of beef cattle and sheep on
-19 large farms in a region. Is there evidence of correlation
+Bardsley and Chambers (1984) gave numbers of beef cattle and sheep on 19 large farms in a region. Is there evidence of correlation
 
 | cattle | sheep |
 |--------|-------|

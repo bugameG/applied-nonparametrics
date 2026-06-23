@@ -6,7 +6,7 @@ output:
   html_document:
     toc: true
     toc_float: true
-    theme: darkly
+    theme: lumen
   pdf_document:
     toc: true
 ---
@@ -1414,12 +1414,15 @@ dinner_set <- data.frame(
 ## Spearman rank correlation coefficient
 dinner_set_UKUS_spearman <- cor.test(x = dinner_set$rank[dinner_set$country == "UK"],
                                      y = dinner_set$rank[dinner_set$country == "US"],
-                                     method = "spearman", exact = TRUE)
+                                     method = "spearman", exact = TRUE,
+                                     alternative = "greater")
 
 ## Kendall's correlation coefficient
-dinner_set_UKUS_kendall <- cor.test(x = dinner_set$rank[dinner_set$country == "UK"],
-                                     y = dinner_set$rank[dinner_set$country == "US"],
-                                     method = "kendall", exact = TRUE)
+dinner_set_UKUS_kendall <- cor.test(
+  x = dinner_set$rank[dinner_set$country == "UK"],
+  y = dinner_set$rank[dinner_set$country == "US"],
+  method = "kendall", exact = TRUE,
+  alternative = "greater")
 
 
 
@@ -1446,11 +1449,58 @@ cat(
 
 ```
 
+
+> We fail to reject the null hypotheses for both rank coefficients. The data provides sufficient evidence in favor of the claim that the 7 dinner set designs have an insignificant difference in the order of preference from the _British_ and _American_ markets.   
+
+
 ### b
 
 *(ANSM 7.7)*
 
 The manufacturer above later decides to assess preferences in the *Canadian* and *Australian* markets by a similar method. Calculate the Spearman and Kendall correlation and coefficients. Is there evidence of a positive association between orders of preference.
+
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+
+# B. CAN vs AUS
+## Spearman rank correlation coefficient
+dinner_set_CANAUS_spearman <- cor.test(
+  x = dinner_set$rank[dinner_set$country == "CAN"],
+  y = dinner_set$rank[dinner_set$country == "AUS"],
+  method = "spearman", exact = TRUE,
+  alternative = "greater")
+
+## Kendall's correlation coefficient
+dinner_set_CANAUS_kendall <- cor.test(
+  x = dinner_set$rank[dinner_set$country == "CAN"],
+  y = dinner_set$rank[dinner_set$country == "AUS"],
+  method = "kendall", exact = TRUE,
+  alternative = "greater")
+
+
+
+cat(
+  paste0("Spearman's correlation","\n",
+        "--------------------------","\n",
+        "value: ", round(dinner_set_CANAUS_spearman$estimate,4), "\n",
+        "p-value: ", round(dinner_set_CANAUS_spearman$p.value,4), "\n",
+        "Decision: ", ifelse(dinner_set_CANAUS_spearman$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"),
+        "\n","\n",
+        "====================================================","\n","\n",
+        "Kendall's correlation","\n",
+        "--------------------------","\n",
+        "value: ", round(dinner_set_CANAUS_kendall$estimate,4), "\n",
+        "p-value: ", round(dinner_set_CANAUS_kendall$p.value,4), "\n",
+        "Decision: ", ifelse(dinner_set_CANAUS_kendall$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis")
+        )
+)
+```
+
+> We fail to reject the null hypotheses for both rank coefficients. The data provides sufficient evidence in favor of the claim that the 7 dinner set designs have an insignificant difference in the order of preference from the _Canadian_ and _Australian_ markets.
 
 ### c
 
@@ -1458,11 +1508,188 @@ The manufacturer above later decides to assess preferences in the *Canadian* and
 
 Perform an appropriate analysis of the ranked data for all four countries in Exercises 7.6 and 7.7 to assess the evidence for any overall concordance
 
+#### UK-CAN
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+
+# C. UK vs CAN
+## Spearman rank correlation coefficient
+dinner_set_UKCAN_spearman <- cor.test(
+  x = dinner_set$rank[dinner_set$country == "UK"],
+  y = dinner_set$rank[dinner_set$country == "CAN"],
+  method = "spearman", exact = TRUE,
+  alternative = "greater")
+
+## Kendall's correlation coefficient
+dinner_set_UKCAN_kendall <- cor.test(
+  x = dinner_set$rank[dinner_set$country == "UK"],
+  y = dinner_set$rank[dinner_set$country == "CAN"],
+  method = "kendall", exact = TRUE,
+  alternative = "greater")
+
+
+
+cat(
+  paste0("Spearman's correlation","\n",
+        "--------------------------","\n",
+        "value: ", round(dinner_set_UKCAN_spearman$estimate,4), "\n",
+        "p-value: ", round(dinner_set_UKCAN_spearman$p.value,4), "\n",
+        "Decision: ", ifelse(dinner_set_UKCAN_spearman$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"),
+        "\n","\n",
+        "====================================================","\n","\n",
+        "Kendall's correlation","\n",
+        "--------------------------","\n",
+        "value: ", round(dinner_set_UKCAN_kendall$estimate,4), "\n",
+        "p-value: ", round(dinner_set_UKCAN_kendall$p.value,4), "\n",
+        "Decision: ", ifelse(dinner_set_UKCAN_kendall$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis")
+        )
+)
+```
+> We fail to reject the null hypotheses for both rank coefficients. The data provides sufficient evidence in favor of the claim that the 7 dinner set designs have an insignificant difference in the order of preference from the _British_ and Canadian markets.
+
+
+#### UK-AUS
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+
+# D. UK vs AUS
+## Spearman rank correlation coefficient
+dinner_set_UKAUS_spearman <- cor.test(
+  x = dinner_set$rank[dinner_set$country == "UK"],
+  y = dinner_set$rank[dinner_set$country == "AUS"],
+  method = "spearman", exact = TRUE,
+  alternative = "greater")
+
+## Kendall's correlation coefficient
+dinner_set_UKAUS_kendall <- cor.test(
+  x = dinner_set$rank[dinner_set$country == "UK"],
+  y = dinner_set$rank[dinner_set$country == "AUS"],
+  method = "kendall", exact = TRUE,
+  alternative = "greater")
+
+
+
+cat(
+  paste0("Spearman's correlation","\n",
+        "--------------------------","\n",
+        "value: ", round(dinner_set_UKAUS_spearman$estimate,4), "\n",
+        "p-value: ", round(dinner_set_UKAUS_spearman$p.value,4), "\n",
+        "Decision: ", ifelse(dinner_set_UKAUS_spearman$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"),
+        "\n","\n",
+        "====================================================","\n","\n",
+        "Kendall's correlation","\n",
+        "--------------------------","\n",
+        "value: ", round(dinner_set_UKAUS_kendall$estimate,4), "\n",
+        "p-value: ", round(dinner_set_UKAUS_kendall$p.value,4), "\n",
+        "Decision: ", ifelse(dinner_set_UKAUS_kendall$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis")
+        )
+)
+```
+> We fail to reject the null hypotheses for both rank coefficients. The data provides sufficient evidence in favor of the claim that the 7 dinner set designs have an insignificant difference in the order of preference from the _British_ and _Australian_ markets.
+
+
+
+#### USA-CAN
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+
+# E. USA vs CAN
+## Spearman rank correlation coefficient
+dinner_set_USACAN_spearman <- cor.test(
+  x = dinner_set$rank[dinner_set$country == "US"],
+  y = dinner_set$rank[dinner_set$country == "CAN"],
+  method = "spearman", exact = TRUE,
+  alternative = "greater")
+
+## Kendall's correlation coefficient
+dinner_set_USACAN_kendall <- cor.test(
+  x = dinner_set$rank[dinner_set$country == "US"],
+  y = dinner_set$rank[dinner_set$country == "CAN"],
+  method = "kendall", exact = TRUE,
+  alternative = "greater")
+
+
+
+cat(
+  paste0("Spearman's correlation","\n",
+        "--------------------------","\n",
+        "value: ", round(dinner_set_USACAN_spearman$estimate,4), "\n",
+        "p-value: ", round(dinner_set_USACAN_spearman$p.value,4), "\n",
+        "Decision: ", ifelse(dinner_set_USACAN_spearman$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"),
+        "\n","\n",
+        "====================================================","\n","\n",
+        "Kendall's correlation","\n",
+        "--------------------------","\n",
+        "value: ", round(dinner_set_USACAN_kendall$estimate,4), "\n",
+        "p-value: ", round(dinner_set_USACAN_kendall$p.value,4), "\n",
+        "Decision: ", ifelse(dinner_set_USACAN_kendall$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis")
+        )
+)
+```
+
+> We reject the null hypotheses for both rank coefficients. The data provides sufficient evidence against the initial claim that the 7 dinner set designs have an insignificant difference in the order of preference from the _American_ and _Canadian_ markets.
+
+
+#### USA-AUS
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+
+# F. USA vs AUS
+## Spearman rank correlation coefficient
+dinner_set_USAAUS_spearman <- cor.test(
+  x = dinner_set$rank[dinner_set$country == "US"],
+  y = dinner_set$rank[dinner_set$country == "AUS"],
+  method = "spearman", exact = TRUE,
+  alternative = "greater")
+
+## Kendall's correlation coefficient
+dinner_set_USAAUS_kendall <- cor.test(
+  x = dinner_set$rank[dinner_set$country == "US"],
+  y = dinner_set$rank[dinner_set$country == "AUS"],
+  method = "kendall", exact = TRUE,
+  alternative = "greater")
+
+
+
+cat(
+  paste0("Spearman's correlation","\n",
+        "--------------------------","\n",
+        "value: ", round(dinner_set_USAAUS_spearman$estimate,4), "\n",
+        "p-value: ", round(dinner_set_USAAUS_spearman$p.value,4), "\n",
+        "Decision: ", ifelse(dinner_set_USAAUS_spearman$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"),
+        "\n","\n",
+        "====================================================","\n","\n",
+        "Kendall's correlation","\n",
+        "--------------------------","\n",
+        "value: ", round(dinner_set_USAAUS_kendall$estimate,4), "\n",
+        "p-value: ", round(dinner_set_USAAUS_kendall$p.value,4), "\n",
+        "Decision: ", ifelse(dinner_set_USAAUS_kendall$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis")
+        )
+)
+```
+> We fail to reject the null hypotheses for both rank coefficients. The data provides sufficient evidence in favor of the claim that the 7 dinner set designs have an insignificant difference in the order of preference from the _British_ and _Australian_ market.
+
 ## TWO
 
 *(ANSM 7.9)*
 
-In a pharmacological experiment involving β-blocking agents, Sweeting (1982) recorded for a control group of dogs, cardiac oxygen consumption (MVO) and left ventricular pressure (LVP). Calculate the Kendall and Spearman correlation coefficients. Is there evidence of correlation
+In a pharmacological experiment involving \( \beta \)-blocking agents, Sweeting (1982) recorded for a control group of dogs, cardiac oxygen consumption (MVO) and left ventricular pressure (LVP). Calculate the Kendall and Spearman correlation coefficients. Is there evidence of correlation
 
 | Dog | MVO | LVP |
 |-----|-----|-----|
@@ -1480,6 +1707,40 @@ oxygen <- data.frame(
   "control" = c(rep("mvo",7), rep("lvp",7)),
   "measure" = c(78,92,116,90,106,78,99,
                 32,33,45,30,38,24,44)
+)
+
+# Spearman's rank coefficient
+oxygen_spearman <- cor.test(
+  x = oxygen$measure[oxygen$control == "mvo"],
+  y = oxygen$measure[oxygen$control == "lvp"],
+  method = "spearman", exact = TRUE,
+  )
+
+# Kendall's coefficient
+oxygen_kendall <- cor.test(
+  x = oxygen$measure[oxygen$control == "mvo"],
+  y = oxygen$measure[oxygen$control == "lvp"],
+  method = "kendall", exact = TRUE,
+  )
+
+cat(
+  paste0("Spearman's correlation","\n",
+        "--------------------------","\n",
+        "value: ", round(oxygen_spearman$estimate,4), "\n",
+        "p-value: ", round(oxygen_spearman$p.value,4), "\n",
+        "Decision: ", ifelse(oxygen_spearman$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"),
+        "\n","\n",
+        "====================================================","\n","\n",
+        "Kendall's correlation","\n",
+        "--------------------------","\n",
+        "value: ", round(oxygen_kendall$estimate,4), "\n",
+        "p-value: ", round(oxygen_kendall$p.value,4), "\n",
+        "Decision: ", ifelse(oxygen_kendall$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis")
+        )
 )
 ```
 
@@ -1517,4 +1778,41 @@ farm <- data.frame(
   "cattle" = c(41,0,42,15,47,0,0,0,56,67,707,368,231,104,132,200,172,146,0),
   "sheep" = c(4716,4605,4951,2745,6592,8934,9165,5917,2618,1105,150,2005,3222,7150,8658,6304,1800,5270,1537)
 )
+
+# Spearman's rank correlation 
+farm_spearman <- cor.test(
+  x = farm$cattle, y = farm$sheep,
+  method = "spearman", exact = FALSE
+)
+
+# Kendall's correlation 
+farm_kendall <- cor.test(
+  x = farm$cattle, y = farm$sheep,
+  method = "kendall", exact = FALSE
+)
+
+cat(
+  paste0("Spearman's correlation","\n",
+        "--------------------------","\n",
+        "value: ", round(farm_spearman$estimate,4), "\n",
+        "p-value: ", round(farm_spearman$p.value,4), "\n",
+        "Decision: ", ifelse(farm_spearman$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"),
+        "\n","\n",
+        "====================================================","\n","\n",
+        "Kendall's correlation","\n",
+        "--------------------------","\n",
+        "value: ", round(farm_kendall$estimate,4), "\n",
+        "p-value: ", round(farm_kendall$p.value,4), "\n",
+        "Decision: ", ifelse(farm_kendall$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis")
+        )
+)
 ```
+
+
+
+
+

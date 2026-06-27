@@ -1141,9 +1141,25 @@ strength <- data.frame(
 
 Use a **Kruskal-Wallis H test** with $\alpha = 0.05$ to determine if one or more of the groups were significantly different. If a significant difference exists, use a **two-tailed Mann-Whitney U test** or a **two-sample Kolmogorov-Smirnov test** to identify which groups are significantly different. Use the **Bonferroni** procedure to limit the type I error rate. Report your findings
 
+$$
+{H}_{0}: \text{The perceived effectiveness rankings are identical across all three attractiveness groups}\\ \\
+{H}_{1}:\text{At least one attractiveness group differs in perceived effectiveness rankings}
+$$
+
+
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 str_kw <- kruskal.test(x = strength$str, g = strength$treatment)
+
+cat(
+  paste0("Kruskal-Wallis Test","\n",
+        "------------------------------------------------","\n",
+        "p-value: ", round(str_kw$p.value,4), "\n",
+        "Decision: ", ifelse(str_kw$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"))
+)
 ```
+> A Kruskal-Wallis H test was conducted to compare strength gains across three treatment groups (I, II, and III) among \(\mathit{n=15}\) participants (5 per group), with \(\mathit{\alpha = 0.05}\). Strength gains were ranked globally, yielding rank sums of \({R}_{I}=36.5, {R}_{II}=30.5 \text{ and } {R}_{III}=53\). The test was \(\mathit{non-significant } ({\chi^2}_{(2)}=2.72, p=0.257)\). We therefore fail to reject \({H}_{0}\) — there is insufficient evidence to conclude that any treatment group produced significantly different strength gains. Since the omnibus test was non-significant, post-hoc pairwise comparisons were not warranted; no further inference is made about individual group differences.
 
 ## TWO
 
@@ -1173,9 +1189,79 @@ attraction <- data.frame(
 
 Use a **Kruskal-Wallis H test** with $\alpha = 0.05$ to determine if one or more of the groups are significantly different. If a significant difference exists, use **two-tailed Mann-Whitney U tests** to identify which groups are significantly different. Use the **Bonferroni** procedure to limit the type I error rate. Report you findings.
 
+
+$${H}_{0}: \text{The perceived effectiveness rankings are identical across all three attractiveness groups} \\ \\ 
+{H}_{1}: \text{At least one attractiveness group differs in perceived effectiveness rankings}$$
+
+
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 attraction_kw <- kruskal.test(x = attraction$ranking, g = attraction$group)
+
+
+cat(
+  paste0("Kruskal-Wallis Test","\n",
+        "------------------------------------------------","\n",
+        "p-value: ", round(attraction_kw$p.value,4), "\n",
+        "Decision: ", ifelse(attraction_kw$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"))
+)
 ```
+
+> A Kruskal-Wallis H test was performed to compare perceived effectiveness rankings (1=most effective, 24=least effective) A Kruskal-Wallis H test was performed to compare perceived effectiveness rankings across three attractiveness classifications — *very attractive*, *average*, and *very unattractive* - among \(n=24\) individuals, with \(\alpha=0.05.\) Mean rankings were \(7.5, 11.5 \text{ and }18.5\) respectively, suggesting a **systematic gradient**. The test was significant \( \mathit{({\chi^2}_{(2)}=9.92, p=0.007) } \) indicating that at least one group differed. We reject the null hypothesis. 
+
+Now that we have established the existence of a significance in perceived ranking amongst the three attractiveness groups, we conduct the Mann-Whitney tests to determine its origin. The Bonferroni procedure adjusts our critical p-value to \(\mathit{0.05/3=0.0167}\). Below are the test results;   
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+# Adjusted Bonferroni p-value
+bonferroni_pvalue <- 0.05/3
+
+# Mann-Whitney comparison 1: very attractive vs average
+attraction_mw1 <- wilcox.test(
+  x = attraction$ranking[attraction$group == "very_attractive"],
+  y = attraction$ranking[attraction$group == "average"],
+  paired = FALSE, exact = FALSE)
+
+# Mann-Whitney comparison 1: very attractive vs very unattractive
+attraction_mw2 <- wilcox.test(
+  x = attraction$ranking[attraction$group == "very_attractive"],
+  y = attraction$ranking[attraction$group == "very_unattractive"],
+  paired = FALSE, exact = FALSE)
+
+# Mann-Whitney comparison 1: average vs very unattractive
+attraction_mw3 <- wilcox.test(
+  x = attraction$ranking[attraction$group == "average"],
+  y = attraction$ranking[attraction$group == "very_unattractive"],
+  paired = FALSE, exact = FALSE)
+
+
+cat(
+  paste0("Bonferroni-Mann-Whitney U test (very attractive vs average)","\n",
+         "------------------------------------------------------------","\n",
+         "p-value: ", round(attraction_mw1$p.value, 4), "\n",
+         "Decision: ", ifelse(attraction_mw1$p.value<bonferroni_pvalue,
+                              yes = "Reject the null hypothesis",
+                              no = "Fail to reject the null hypothesis"),"\n","\n",
+         "Bonferroni-Mann-Whitney U test (very attractive vs very unattractive)","\n",
+         "---------------------------------------------------------------------","\n",
+         "p-value: ", round(attraction_mw2$p.value, 4), "\n",
+         "Decision: ", ifelse(attraction_mw2$p.value<bonferroni_pvalue,
+                              yes = "Reject the null hypothesis",
+                              no = "Fail to reject the null hypothesis"),"\n","\n",
+         "Bonferroni-Mann-Whitney U test (average vs very unattractive)","\n",
+         "-------------------------------------------------------------","\n",
+         "p-value: ", round(attraction_mw3$p.value, 4), "\n",
+         "Decision: ", ifelse(attraction_mw3$p.value<bonferroni_pvalue,
+                              yes = "Reject the null hypothesis",
+                              no = "Fail to reject the null hypothesis"))
+)
+```
+
+> The comparison between _very attractive_ and _average_ groups was \(\mathit{non-significant } \mathit{(W = `r round(attraction_mw1$statistic,4)`, p = `r round(attraction_mw1$p.value,4)`)}\).
+> The comparison between _very attractive_ and _very unattractive_ groups was \(\mathit{significant } \mathit{(W = `r round(attraction_mw2$statistic,4)`, p = `r round(attraction_mw2$p.value,4)`)}\).
+> The comparison between _average_ and _very unattractive_ groups was \(\mathit{non-significant } \mathit{(W = `r round(attraction_mw3$statistic,4)`, p = `r round(attraction_mw3$p.value,4)`)}\). The data therefore provides sufficient evidence that individuals perceived as very attractive were ranked significantly more effective at solving difficult problems than those perceived as very unattractive
+
+
 
 ## THREE
 
@@ -1206,9 +1292,28 @@ chaetocnema <- data.frame(
 | 57        | 46        |           |
 |           | 49        |           |
 
+
+
+
+$${H}_{0}:\text{The distribution of maximum head widths is identical across all three \textit{Chaetocnema} species} \\ \\ {H}_{1}:\text{At least one species differs in head width distribution}$$
+
+
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 chaetocnema_kr <- kruskal.test(hwidth~species, data = chaetocnema)
+
+cat(
+  paste0("Kruskal-Wallis Test","\n",
+        "------------------------------------------------","\n",
+        "p-value: ", round(chaetocnema_kr$p.value,4), "\n",
+        "Decision: ", ifelse(chaetocnema_kr$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"))
+)
 ```
+
+
+> A Kruskal-Wallis H test was used to assess species differences in maximum head width _(units:0.01mm)_ across three species of _Chaetocnema_ \({n}_{1}=10,{n}_{2}=11 \text{ and }{n}{3}=8\), with \(\alpha =0.05.\) Median head widths were \(51.5, 49.0, \text{ and } 51.0\) for species 1, 2, and 3 respectively.The test was \(\mathit{non-significant } ({\chi^2}_{2}=4.44 p = `r round(chaetocnema_kr$p.value, 4)`).\) We fail to reject the null hypothesis since the data does not provide sufficient evidence of a species difference in head widths at the 5% significance level.
+
 
 ------------------------------------------------------------------------
 

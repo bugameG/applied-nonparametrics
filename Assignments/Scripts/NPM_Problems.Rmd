@@ -866,11 +866,24 @@ buddy <- data.frame(
 
 Use a **Friedman test** to determine if one or more of the groups are significantly different. Since this is a pilot study, use $\alpha = 0.10$. If a significant difference exists, use **Wilcoxon signed-rank tests** to identify which groups are significantly different. Use the **Bonferroni procedure** to limit the type I error rate. Report your findings
 
+$${H}_{0}:\text{The quality of life satisfaction scores are identical across all four weeks} \\ {H}_{1}:\text{At least one week differs in quality of life satisfaction}$$
+
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 buddy_fr <- friedman.test(y = buddy$score, 
                           groups = buddy$week, 
                           blocks = buddy$participant)
+
+cat(
+  paste0("Friedman test","\n",
+        "------------------------------------------------","\n",
+        "p-value: ", round(buddy_fr$p.value,4), "\n",
+        "Decision: ", ifelse(buddy_fr$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"))
+)
 ```
+> A Friedman test was conducted to examine the effect of animal companionship (ABAB design) on quality of life satisfaction among $n=10$ elderly male participants across four weeks, with $\alpha = 0.05$. Median scores were $8.5, 8.0, 10.0, \text{ and } 10.0$ for weeks 1 through 4 respectively. The omnibus test was non-significant $({\chi^2}_{(3)}=`r buddy_fr$statistic`, p = `r round(buddy_fr$p.value,4)`)$ .We therefore fail to rejct ${H}_{0}.$ The data provides insufficient evidence of a significant difference in quality of life satisfaction across the four weeks. Since the Friedman test was non-significant, post-hoc Wilcoxon signed-rank comparisons were not warranted, even at $\alpha = 0.10$
+
 
 ## TWO
 
@@ -901,6 +914,8 @@ curlups <- data.frame(
 )
 ```
 
+$${H}_{0}:\text{The number of curl-ups is identical across all three time points} \\ \\ {H}_{1}:\text{Performance increases over time}$$
+
 Use a **Friedman test** with $\alpha = 0.05$ to determine if one or more of the groups are significantly different. The teacher is expecting performance gains, so if a significant difference exists, use **one-tailed Wilcoxon signed-rank tests** to identify which groups are significantly different. Use the **Bonferroni** procedure to limit the type I error rate. Report your findings.
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
@@ -908,18 +923,68 @@ curlups_fr <- friedman.test(y = curlups$score,
                             groups = curlups$month, 
                             blocks = curlups$participant)
 
-# wilcox.test(x = curlups$score[curlups$month == "baseline"],
-#             y = curlups$score[curlups$month == "month1"], alternative = "greater",
-#             paired = TRUE, conf.level = 0.95)
-# 
-# wilcox.test(x = curlups$score[curlups$month == "baseline"],
-#             y = curlups$score[curlups$month == "month2"], alternative = "greater",
-#             paired = TRUE, conf.level = 0.95)
-# 
-# wilcox.test(x = curlups$score[curlups$month == "month1"],
-#             y = curlups$score[curlups$month == "month2"], alternative = "greater",
-#             paired = TRUE, conf.level = 0.05)
+cat(
+  paste0("Friedman test","\n",
+        "------------------------------------------------","\n",
+        "p-value: ", round(curlups_fr$p.value,4), "\n",
+        "Decision: ", ifelse(curlups_fr$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"))
+)
 ```
+> A Friedman test was used to evaluate the effect of a strength and conditioning program on curl-up performance across three time points (baseline, month 1, month 2) for $n = 12$ male participants, with $\alpha = 0.05$. Median scores were $45.5, 46.5, \text{ and } 47.0$ respectively, suggesting a progressive increase. The Friedman test was _significant_ $({\chi^2}_{(2)}=`r round(curlups_fr$statistic,4)`, p = `r round(curlups_fr$p.value,4)`)$ indicating at least one time point differed. 
+
+We therefore proceed to conduct post-hoc Wilcoxon signed-rank tests to establish the origin of the difference. Below are the post-hoc test results determined via the Bonferroni p-value $0.05/3=0.0167$; 
+
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+bonferroni_pvalue <- 0.05/3
+# Bonferroni - Wilcoxon Sign rank test
+## Baseline vs month 1 
+curlup_wsr1 <- wilcox.test(
+  x = curlups$score[curlups$month == "baseline"],
+  y = curlups$score[curlups$month == "month1"], 
+  alternative = "less", paired = TRUE)
+
+## Baseline vs month 2
+curlup_wsr2 <- wilcox.test(
+  x = curlups$score[curlups$month == "baseline"],
+  y = curlups$score[curlups$month == "month2"], 
+  alternative = "less", paired = TRUE)
+
+## month 1 vs month 2
+curlup_wsr3 <- wilcox.test(
+  x = curlups$score[curlups$month == "month1"],
+  y = curlups$score[curlups$month == "month2"], 
+  alternative = "less", paired = TRUE)
+
+
+cat(
+  paste0("Bonferroni-Wilcoxon Signed Rank test (baseline vs month 1)","\n",
+         "------------------------------------------------------------","\n",
+         "p-value: ", round(curlup_wsr1$p.value, 4), "\n",
+         "Decision: ", ifelse(curlup_wsr1$p.value<bonferroni_pvalue,
+                              yes = "Reject the null hypothesis",
+                              no = "Fail to reject the null hypothesis"),"\n","\n",
+         "Bonferroni-Wilcoxon Signed Rank test (baseline vs month 2)","\n",
+         "-------------------------------------------------------------","\n",
+         "p-value: ", round(curlup_wsr2$p.value, 4), "\n",
+         "Decision: ", ifelse(curlup_wsr2$p.value<bonferroni_pvalue,
+                              yes = "Reject the null hypothesis",
+                              no = "Fail to reject the null hypothesis"),"\n","\n",
+         "Bonferroni-Wilcoxon Signed Rank test (month 1 vs month 2)","\n",
+         "-------------------------------------------------------------","\n",
+         "p-value: ", round(curlup_wsr3$p.value, 4), "\n",
+         "Decision: ", ifelse(curlup_wsr3$p.value<bonferroni_pvalue,
+                              yes = "Reject the null hypothesis",
+                              no = "Fail to reject the null hypothesis"))
+)
+
+```
+
+> The comparison of _baseline_ vs _month 1_ was **non-significant** $(W = `r curlup_wsr1$statistic`, p = `r round(curlup_wsr1$p.value,4)`)$. However, _baseline_ vs _month 1_ was **significant** $(W = `r curlup_wsr2$statistic`, p = `r round(curlup_wsr2$p.value,4)`)$, as was _month 1_ vs _month 2_ $(W = `r curlup_wsr3$statistic`, p = `r round(curlup_wsr3$p.value,4)`)$. The conditioning program produced a significant improvement in curl-up performance by month 2, with meaningful gains observed between month 1 and month 2 as well, but no detectable change from baseline to month 1. 
+ 
+
 
 ## THREE
 
@@ -949,12 +1014,87 @@ remember <- data.frame(
 )
 ```
 
-Rank the data within each block (student) and use a Friedman test to assess evidence of a difference between recall rates for the three groups. In particular, is the recall rate for group B and/or group C significantly lower than that for group A? Carry out an ANOVA on the given data. Do the conclusions agree with the Friedman test? If not, why not?
+Rank the data within each block (student) and use a **Friedman test** to assess evidence of a difference between recall rates for the three groups. In particular, is the recall rate for group B and/or group C significantly lower than that for group A? Carry out an ANOVA on the given data. Do the conclusions agree with the Friedman test? If not, why not?
+
+$${H}_{0}:\text{Recall rates are identical across all three name categories}\\ \\ {H}_{1}:\text{At least one category has a different recall rate}$$
+
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
-remember_fr <- friedman.test(y = remember$count, groups = remember$grp,
+remember_fr <- friedman.test(y = remember$count, 
+                             groups = remember$grp,
                              blocks = remember$student)
+
+cat(
+  paste0("Friedman Test","\n",
+        "-----------------","\n",
+        "p-value: ", round(remember_fr$p.value,4), "\n",
+        "Decision: ", ifelse(remember_fr$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"))
+)
 ```
+
+> A Friedman test was performed to assess differences in recall rates across three name categories — sporting personalities (A), politicians (B), and local dignitaries (C) — among $ n=10 $ students, with $\alpha = 0.05$. Median recall counts were $3, 2, \text{ and } 1$ for groups A, B, and C respectively. We rejected the null hypothesis thus, test was _significant_ $({\chi^2}_{(2)}=`r remember_fr$statistic`, p = `r round(remember_fr$p.value,4)`)$.
+
+One-way ANOVA
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+remember_aov <- aov(count ~ grp + student, data = remember) |> summary();remember_aov
+```
+
+> A one-way ANOVA with student as a blocking factor also yielded a significant group effect $(F=9.38, p = 0.002)$, consistent with the Friedman result. The two tests agree here because the data, while discrete and bounded, does not show severe departures from the ANOVA assumptions at this sample size.
+
+Post-hoc Bonferroni Wilcoxon Signed Rank tests
+
+```{r, echo = FALSE, message = FALSE, warning = FALSE}
+# Bonferroni p-value
+bonferroni_pvalue <- 0.05/length(unique(remember$grp))
+# Wilcoxon Signed Rank tests
+## group A vs group B
+remember_wsr1 <- wilcox.test(
+  x = remember$count[remember$grp == "A"],
+  y = remember$count[remember$grp == "B"],
+  paired = TRUE
+)
+
+## group A vs group C
+remember_wsr2 <- wilcox.test(
+  x = remember$count[remember$grp == "A"],
+  y = remember$count[remember$grp == "C"],
+  paired = TRUE
+)
+
+## group B vs group C
+remember_wsr3 <- wilcox.test(
+  x = remember$count[remember$grp == "B"],
+  y = remember$count[remember$grp == "C"],
+  paired = TRUE
+)
+
+cat(
+  paste0("Bonferroni-Wilcoxon Signed Rank test (group A vs group B)","\n",
+         "------------------------------------------------------------","\n",
+         "p-value: ", round(remember_wsr1$p.value, 4), "\n",
+         "Decision: ", ifelse(remember_wsr1$p.value<bonferroni_pvalue,
+                              yes = "Reject the null hypothesis",
+                              no = "Fail to reject the null hypothesis"),"\n","\n",
+         "Bonferroni-Wilcoxon Signed Rank test (group A vs group C)","\n",
+         "-------------------------------------------------------------","\n",
+         "p-value: ", round(remember_wsr2$p.value, 4), "\n",
+         "Decision: ", ifelse(remember_wsr2$p.value<bonferroni_pvalue,
+                              yes = "Reject the null hypothesis",
+                              no = "Fail to reject the null hypothesis"),"\n","\n",
+         "Bonferroni-Wilcoxon Signed Rank test (group B vs group C)","\n",
+         "-------------------------------------------------------------","\n",
+         "p-value: ", round(remember_wsr3$p.value, 4), "\n",
+         "Decision: ", ifelse(remember_wsr3$p.value<bonferroni_pvalue,
+                              yes = "Reject the null hypothesis",
+                              no = "Fail to reject the null hypothesis"))
+)
+```
+
+> The comparison _A vs B_ was **non-significant** $(V = `r remember_wsr1$statistic`, p = `r round(remember_wsr1$p.value, 4)`)$ falling just above the adjusted threshold. The comparison _A vs C_ was **significant** $(V = `r remember_wsr2$statistic`, p = `r round(remember_wsr2$p.value, 4)`)$, confirming that group A was recalled significantly more than group C. The comparison _B vs C_ was **non-significant** $(V = `r remember_wsr3$statistic`, p = `r round(remember_wsr3$p.value, 4)`)$. _Sporting personalities_ were recalled at a significantly higher rate than _local dignitaries_, though no statistically significant difference was established between _politicians_ and _sporting personalities_ or _between politicians and local dignitaries_ after Bonferroni correction
+
 
 ## FOUR
 
@@ -983,13 +1123,26 @@ ftse <- data.frame(
 | 9   | 1         | 0         | 0         | 0         |
 | 10  | 1         | 0         | 1         | 1         |
 
+$${H}_{0}:\text{There is no difference in prediction accuracy among the four tipsters} \\ \\ {H}_{1}:\text{At least on tipster differs in in prediction theory}$$
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 ftse_cochran <- CochranQTest(y = ftse$outcome,
                              g = ftse$tipster,
                              blocks = ftse$day)
-```
 
+
+cat(
+  paste0("Cochran's Q test","\n",
+        "------------------","\n",
+        "p-value: ", round(ftse_cochran$p.value,4), "\n",
+        "Decision: ", ifelse(ftse_cochran$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"))
+)
+```
+> Cochran's Q test was applied to binary prediction outcomes (1 = correct, 0 = incorrect) from four share tipsters over 10 days, with $\alpha = 0.05$
+. Correct prediction counts were $7, 6, 8, \text{ and } 6$ out of $10$ for tipsters 1 through 4 respectively. The test was **non-significant** $({Q}_{(3)} = `r ftse_cochran$statistic`,p = `r round(ftse_cochran$p.value,4)`$
+.We fail to reject ${H}_{0}$ — there is no sufficient evidence of a difference in prediction accuracy among the four tipsters
 
 ## FIVE
 
@@ -1021,9 +1174,22 @@ ventricle <- data.frame(
 
 Use a Friedman test to investigate differences in response between drugs. In particular, is there evidence of a difference between drug A and drug B?
 
+$${H}_{0}:\text{The distribution of premature ventricular contractions is identical across drugs A,B and C} \\ \\ {H}_{1}:\text{At least one drug produces a different contraction rate}$$
+
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 ventricle_fr <- friedman.test(count~drug|patient, data = ventricle)
+
+cat(
+  paste0("Friedman test","\n",
+        "------------------","\n",
+        "p-value: ", round(ventricle_fr$p.value,4), "\n",
+        "Decision: ", ifelse(ventricle_fr$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"))
+)
 ```
+
+> A Friedman test was conducted to investigate differences in premature ventricular contractions per hour among $12$ cardiac arrhythmia patients treated with three drugs (A, B, C), with $\alpha = 0.05$. Median contraction counts were $28, 8, \text{ and } 5.5$ for drugs A, B, and C respectively. The omnibus test was **significant** $({\chi^2}_{(2)} = `r round(ventricle_fr$p.value, 4)`, p = 0.018)$. We reject the null hypothesis, concluding that drug treatment has a significant effect on the rate of ventricular contraction per hour.
 
 ## SIX
 
@@ -1075,9 +1241,22 @@ births <- data.frame(
 
 Perform Friedman analyses to determine whether the data indicate a difference in birth rate between days of the week that shows consistency over the four selected weeks
 
+$${H}_{0}:\text{The distribution of daily bith counts is consistent across the four selected weeks} \\ \\ {H}_{1}:\text{At least one week shows a different pattern of daily births}$$
+
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 births_fr <- friedman.test(freq~week|day, data = births)
+
+cat(
+  paste0("Friedman test","\n",
+        "------------------","\n",
+        "p-value: ", round(births_fr$p.value,4), "\n",
+        "Decision: ", ifelse(births_fr$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"))
+)
+
 ```
+> A Friedman test was used to assess whether birth rates across days of the week were consistent over four selected weeks (weeks 10, 20, 30, 40) in Israel 1975, with $\alpha = 0.05$. The test was significant $({\chi^2}_{(3)}=`r births_fr$statistic`, p = `r round(births_fr$p.value,4)`)$. We reject ${H}_{0}$ .The data indicates that the pattern of daily births was inconsistent across the four selected weeks, suggesting week-to-week variation in the distribution of births by day.
 
 ## SEVEN
 
@@ -1096,6 +1275,8 @@ Snee (1985) gives data on average liver weights per bird for chicks given three 
 | 7     | 3.98 | 4.06 | 4.17 |
 | 8     | 3.84 | 3.92 | 4.12 |
 
+$${H}_{0}:\text{Average liver weight is identical across the three promoter dose levels}\\ \\ {H}_{1}:\text{At least one dose level produces a different liver weight}$$
+
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 liver <- data.frame(
 "house" = rep(1:8, times = 3),
@@ -1106,13 +1287,39 @@ liver <- data.frame(
 )
 
 liver_fr <- friedman.test(weight~level|house, data = liver)
+
+cat(
+  paste0("Friedman test","\n",
+        "------------------","\n",
+        "p-value: ", round(liver_fr$p.value,4), "\n",
+        "Decision: ", ifelse(liver_fr$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"))
+)
 ```
+
+
+> A Friedman test was performed to assess the effect of growth promoter dose level (none, low, high) on average liver weight per chick across $n = 8$ bird houses, with $\alpha = 0.05$. Median liver weights were $3.860, 4.005, \text{ and } 4.070$ for none, low, and high doses respectively, suggesting a monotonic increase. The Friedman test was highly significant $({\chi^2}_{(2)}=`r liver_fr$statistic`, p = `r round(liver_fr$p.value,4)`)$ .We reject ${H}_{0}$
 
 Since dose levels are ordered, a Page test is appropriate. Try this also
 
+$${H}_{0}:\text{Liver weights are identically distriuted across dose levels}\\ \\ {H}_{1}:\text{Liver weights increase monotonically with dose level}$$
+
 ```{r, echo = FALSE,message = FALSE, warning = FALSE}
 liver_jt <- JonckheereTerpstraTest(weight~level, data = liver, alternative = "two.sided")
+
+cat(
+  paste0("Jonckheere-Terpstra test","\n",
+        "------------------------------","\n",
+        "p-value: ", round(liver_jt$p.value,4), "\n",
+        "Decision: ", ifelse(liver_jt$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"))
+)
 ```
+> Since the dose levels are ordered, a Jonckheere-Terpstra directional analysis was also conducted. Pairwise results confirmed a significant increase from **none** to **low** $(W = 59, p = 0.003)$ and from **none** to **high** $(W = 62, p = 0.001). The comparison **low** to **high** was **non-significant** $(W = 43,p = 0.134)$, suggesting the most pronounced effect occurs between the **no-dose** and **low-dose** conditions, with diminishing gains at higher doses. Overall, the data provides strong evidence of a dose-ordered increase in average liver weight attributable to the growth promoter
+
+
 
 ------------------------------------------------------------------------
 

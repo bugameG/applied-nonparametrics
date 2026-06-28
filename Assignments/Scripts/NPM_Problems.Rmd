@@ -139,7 +139,7 @@ cat(
         )
 )
 ```
-> **Two-tailed Wilcoxon signed-rank** and **sign tests** were conducted to assess whether having a companion affected heart rate among $n = 10$ male participants, with $\alpha = 0.05$. Median pulse rates were $83.5 \text{ bpm  (alone) } and 78.5 \text{bpm  (with companion) }$. The **Wilcoxon signed-rank test** was **non-significant** $(V = `r hr$statistic `, p = `r round(hr$p.value,4)`)$.
+> **Two-tailed Wilcoxon signed-rank** and **sign tests** were conducted to assess whether having a companion affected heart rate among $n = 10$ male participants, with $\alpha = 0.05$. Median pulse rates were $83.5 \text{ bpm (alone) and }78.5 \text{ bpm (with companion) }$. The **Wilcoxon signed-rank test** was **non-significant** $(V = `r hr$statistic `, p = `r round(hr$p.value,4)`)$.
 The **sign test** recorded **8 positive** and **2 negative** differences, also **non-significant** $(p = `r round(hr2$p.value,4)`)$. Both tests fail to reject ${H}_{0}$ — the data provides insufficient evidence that suggests a difference in pulse rate between the two conditions.
 
 
@@ -432,48 +432,8 @@ fg_ks <- ks.test(x = firstgrade$score[firstgrade$method=="ono"],
                      alternative = "two.sided")
 ```
 
+
 ## TWO
-
-A research study was conducted to see if an active involvement in a hobby has a positive effect on the health of a person who retires after age 65. The data in `Table 4.9` describes the health (number of doctor visits in 1 year) for participants who are involved in a hobby almost daily and those who are not.
-
-| No hobby group | Hobby group |
-|----------------|-------------|
-| 12             | 9           |
-| 15             | 5           |
-| 8              | 10          |
-| 11             | 3           |
-| 9              | 4           |
-| 17             | 2           |
-
-: Table 4.9
-
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
-hobby <- data.frame(
-  "group" = c(rep("nohobby",6), rep("hobby",6)),
-  "visits" = c(12,15,8,11,9,17,
-               9,5,10,3,4,2)
-)
-```
-
-Use **one-tailed Mann-Whitney U** and **Kolmogorov-Smirnov two-sample** tests to determine whether the hobby tends to reduce the need for doctor visits. Set $\alpha = 0.05$. Report your findings
-
-### a
-
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
-hobby_mw <- wilcox.test(x = hobby$visits[hobby$group=="nohobby"],
-                        y = hobby$visits[hobby$group=="hobby"],
-                        alternative = "greater", paired = FALSE)
-```
-
-### b
-
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
-hobby_ks <- ks.test(x = hobby$visits[hobby$group=="nohobby"],
-                    y = hobby$visits[hobby$group=="hobby"],
-                    alternative = "two.sided")
-```
-
-## THREE
 
 | Method 1 | Method 2 |
 |----------|----------|
@@ -516,76 +476,8 @@ comp_ks <- ks.test(x = compskills$score[compskills$method == "method1"],
                    alternative = "two.sided")
 ```
 
-## FOUR
 
-Two methods of teaching were compared. Method 1 uses the computer to interact with the student and diagnose and remediate the student based on misconceptions. Method 2 was taught using workbooks in classroom groups. `Table 4.11` shows the data obtained on an assessment after 6 weeks of instruction. Calculate the ES using the z-score from the analysis.
-
-|          |          |
-|----------|----------|
-| Method 1 | Method 2 |
-| 27       | 9        |
-| 38       | 42       |
-| 15       | 21       |
-| 85       | 83       |
-| 36       | 110      |
-| 95       | 19       |
-| 93       | 29       |
-| 57       | 40       |
-| 63       | 30       |
-| 81       | 23       |
-| 65       | 18       |
-| 77       | 32       |
-| 59       | 101      |
-| 89       | 7        |
-| 41       | 50       |
-| 26       | 37       |
-| 102      | 22       |
-| 55       | 71       |
-| 46       | 16       |
-| 82       | 45       |
-| 24       | 35       |
-| 87       | 28       |
-| 66       | 91       |
-| 12       | 86       |
-| 90       | 20       |
-
-: Table 4.11
-
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
-comp2 <- data.frame(
-  "method" = c(rep("method1",25), rep("method2", 25)),
-"score" = c(27,38,15,85,36,95,93,57,63,81,65,77,59,89,41,26,102,55,46,82,24,87,66,12,90,
-9,42,21,83,110,19,29,40,30,23,18,32,101,7,50,37,22,71,16,45,35,28,91,86,20)
-)
-
-# Sample size
-n_comp2 <- 25
-
-# Wilcoxon rank sum hypothesis test for paired samples
-comp2_wsr <- wilcox.test(x = comp2$score[comp2$method == "method1"], 
-                         y = comp2$score[comp2$method == "method2"],
-                      alternative = "two.sided", paired = FALSE)
-
-# Test statistic
-comp2_wsr_t <- comp2_wsr$statistic
-
-# Normal approximation
-## E[T]
-comp2_wsr_tmean <- ((n_comp2)*(n_comp2+1))/4
-
-## sd[T]
-comp2_wsr_tsd <- sqrt((n_comp2*(n_comp2+1)*(2*n_comp2+1))/24)
-
-## z-variate
-z_comp2 <- ((comp2_wsr_t-comp2_wsr_tmean)/comp2_wsr_tsd)
-
-## Effect size
-es_comp2 <- abs(z_comp2)/sqrt(n_comp2)
-
-cat(paste0("Effect size: ", round(es_comp2, 4)))
-```
-
-## FIVE
+## THREE
 
 Two methods were used to provide instruction in Science for 7th Grade. Method 1 included a laboratory each week and method 2 has only classroom work with lecture and worksheets. `Table 4.12` shows end-of-term test performance for the two methods. Construct a 95% median confidence interval based on the difference between two independent samples to compare the two methods.
 
@@ -610,7 +502,7 @@ lab <- data.frame(
 )
 ```
 
-## SIX
+## FOUR
 
 *(ANSM 5.5)*
 
@@ -647,26 +539,8 @@ metal_temp_wrs <- wilcox.test(x = metal_temp$rank[metal_temp$temp == "H"],
                               paired = FALSE)
 ```
 
-## SEVEN
 
-*(ANSM 5.9)*
-
-Hotpot stoves use a standard oven insulation. To test its effectiveness they take random samples from the production line and heat the ovens selected to $400^{0}C$, noting the time taken to cool to $350^{0}C$, after switching off. For a sample of 8 ovens the times in minutes are: $$15.7,\ 14.8,\ 14.2,\ 16.1,\ 15.3,\ 13.9,\ 17.2,\ 14.9$$ They decide to explore a cheaper insulation, and using this on a sample of 9 the times taken for the same temperature drop are: $$13.7,\ 14.1,\ 14.7,\ 15.4,\ 15.6,\ 14.4,\ 12.9,\ 15.1,\ 14.0$$ Are the firm justified in asserting there is no real evidence of a different rate of heat loss? Obtain a 95 per cent confidence limit for the difference in median heat loss with and without a normality assumption. Comment critically on any differences between your conclusions
-
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
-hotpot <- data.frame(
-  "insulation" = c(rep("1", 8), rep("2", 9)),
-  "minutes" = c(15.7,14.8,14.2,16.1,15.3,13.9,17.2,14.9,
-                13.7,14.1,14.7,15.4,15.6,14.4,12.9,15.1,14)
-)
-
-hotpot_wrs <- wilcox.test(x = hotpot$minutes[hotpot$insulation == "1"],
-                          y = hotpot$minutes[hotpot$insulation == "2"],
-                          paired = FALSE, alternative = "two.sided",
-                          exact = FALSE, conf.int = TRUE)
-```
-
-## EIGHT
+## FIVE
 
 *(ANSM 5.14)*
 
@@ -698,33 +572,8 @@ diff_ks <- ks.test(
   alternative = "two.sided", exact = TRUE)
 ```
 
-## NINE
 
-*(ANSM 5.18)*
-
-Carter and Hubert (1985) give data for percentage variation in blood sugar over 1-hour periods for rabbits given two different dose levels of a drug. Is there evidence of a response difference between levels?
-
-| dose 1 | dose 2 |
-|--------|--------|
-| 0.21   | 1.59   |
-| -16.20 | 2.66   |
-| -10.10 | -6.27  |
-| -8.67  | -2.32  |
-| -11.13 | -10.87 |
-| 1.96   | 7.23   |
-| -10.19 | -3.76  |
-| -15.87 | 3.02   |
-| -12.81 | 15.01  |
-
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
-dose <- data.frame(
-  "dose" = c(rep("I", 9), rep("II", 9)),
-  "pct_var"= c(0.21,-16.20,-10.10,-8.67,-11.13,1.96,-10.19,-15.87,-12.81,
-               1.59,2.66,-6.27,-2.32,-10.87,7.23,-3.76,3.02,15.01)
-)
-```
-
-## TEN
+## SIX
 
 *(ANSM 5.22)*
 

@@ -1,10 +1,3 @@
-```
-============================================================
-  applied-nonparametrics
-  bugameG | Maseno University | BSc Applied Statistics & IT
-============================================================
-```
-
 A repository dedicated to the study and application of
 nonparametric statistical methods using R.
 

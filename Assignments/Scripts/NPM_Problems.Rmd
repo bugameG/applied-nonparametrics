@@ -40,8 +40,6 @@ A teacher wished to determine if providing a bilingual dictionary to students wi
 
 : Table 3.10
 
-Use a **one-tailed Wilcoxon signed rank** test and a **one-tailed sign test** to determine which testing condition resulted in higher scores. Use $\alpha = 0.05$. Report your findings
-
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 tab1 <- data.frame(
   "student"=seq(1,10,1),
@@ -50,20 +48,43 @@ tab1 <- data.frame(
 )
 ```
 
-### a
+Use a **one-tailed Wilcoxon signed rank** test and a **one-tailed sign test** to determine which testing condition resulted in higher scores. Use $\alpha = 0.05$. Report your findings
+
+$${H}_{0}:\text{The billingual dictionary has no effect on math test scores}\\ \\ {H}_{1}:\text{Math test scores are higher without the billingual dictionary}$$
+
+
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# One-tailed Wilcoxon signed-rank test
 dictionary <- wilcox.test(x = tab1$before, y = tab1$after,
                           alternative = "greater",
                           paired = TRUE)
-```
 
-### b
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# One-tailed Sign Test
 dictionary2 <- SignTest(x = tab1$before, y = tab1$after,
                         alternative = "greater")
+
+cat(
+  paste0("One-tailed Wilcoxon signed-rank test","\n",
+        "---------------------------------------","\n",
+        "p-value: ", round(dictionary$p.value,4), "\n",
+        "Decision: ", ifelse(dictionary$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"), "\n","\n",
+        "One-tailed Sign Test","\n",
+        "--------------------------","\n",
+        "p-value: ", round(dictionary2$p.value,4), "\n",
+        "Decision: ", ifelse(dictionary2$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis")
+        )
+)
 ```
+
+
+> A **one-tailed Wilcoxon signed-rank test** and a **one-tailed sign test** were conducted to determine whether students performed better on the math test without a bilingual dictionary, with $\alpha = 0.05$ and $n = 10$. Median scores were $44.0 \text{ (without dictionary) } \text{ and } 39.5 \text{ (with dictionary) }$. For the Wilcoxon signed-rank test, the result was **non-significant** $(V = `r dictionary$statistic`, p = `r round(dictionary$p.value, 4)`)$. 
+The sign test yielded **7 positive differences** and **3 negative differences**, also **non-significant** $(p = `r round(dictionary2$p.value, 4)`)$. Both tests fail to reject ${H}_{0}$ — there is insufficient evidence to conclude that students scored higher without the bilingual dictionary.
+
 
 ## TWO
 
@@ -84,27 +105,43 @@ A research study was done to investigate the influence of being alone at night o
 
 : Table 3.11
 
+$${H}_{0}:\text{There is no diference in pulse rate between being alone and having a companion}\\ \\ {H}_{1}:\text{There is a difference in pulse rate between the two conditions}$$
+
+
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 pulse <- data.frame(
   "participant" = LETTERS[1:10],
   "without" = c(88,77,91,70,80,85,90,82,93,75),
   "with" = c(72,74,80,77,71,83,80,91,86,69))
-```
 
-### a
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# Two-tailed Wilcoxon signed-rank test
 hr <- wilcox.test(x = pulse$without, y = pulse$with,
                   alternative = "two.sided", 
                   paired = TRUE)
-```
 
-### b
-
-```{r, echo=FALSE, message=FALSE, warning=FALSE}
+# Two-tailed Sign test
 hr2 <- SignTest(x = pulse$without, y = pulse$with,
                   alternative = "two.sided")
+
+cat(
+  paste0("Two-tailed Wilcoxon signed-rank test","\n",
+        "---------------------------------------","\n",
+        "p-value: ", round(hr$p.value,4), "\n",
+        "Decision: ", ifelse(hr$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"), "\n","\n",
+        "Two-tailed Sign Test","\n",
+        "--------------------------","\n",
+        "p-value: ", round(hr2$p.value,4), "\n",
+        "Decision: ", ifelse(hr2$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis")
+        )
+)
 ```
+> **Two-tailed Wilcoxon signed-rank** and **sign tests** were conducted to assess whether having a companion affected heart rate among $n = 10$ male participants, with $\alpha = 0.05$. Median pulse rates were $83.5 \text{ bpm  (alone) } and 78.5 \text{bpm  (with companion) }$. The **Wilcoxon signed-rank test** was **non-significant** $(V = `r hr$statistic `, p = `r round(hr$p.value,4)`)$.
+The **sign test** recorded **8 positive** and **2 negative** differences, also **non-significant** $(p = `r round(hr2$p.value,4)`)$. Both tests fail to reject ${H}_{0}$ — the data provides insufficient evidence that suggests a difference in pulse rate between the two conditions.
+
 
 ## THREE
 
@@ -126,30 +163,45 @@ A researcher conducts a pilot study to compare two treatments to help obese fema
 
 Use a **two-tailed Wilcoxon signed-rank test** and a **two-tailed sign test** to determine which treatment resulted in greater weight loss. Use $\alpha = 0.05$. Report your findings
 
+
+$${H}_{0}:\text{There is no difference in weight loss between treatment 1 and 2}\\ \\ {H}_{1}:\text{There is a difference in weight loss between the two treatments}$$
+
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 wl <- data.frame(
   "participant" = 1:8,
   "t1" = c(10,20,15,9,18,11,6,12),
   "t2" = c(18,12,16,7,21,17,13,14))
-```
 
-### a
-
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
+# Two-tailed Wilcoxon signed-rank test
 wl_wsr <- wilcox.test(x = wl$t1, y = wl$t2,
                       alternative = "two.sided", paired = TRUE)
-```
-
-### b
-
-```{r, echo = FALSE, message = FALSE, warning = FALSE}
+# Two-tailed sign test
 wl_sign <- SignTest(x = wl$t1, y = wl$t2,
                     alternative = "two.sided")
+
+cat(
+  paste0("Two-tailed Wilcoxon signed-rank test","\n",
+        "---------------------------------------","\n",
+        "p-value: ", round(wl_wsr$p.value,4), "\n",
+        "Decision: ", ifelse(wl_wsr$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"), "\n","\n",
+        "Two-tailed Sign Test","\n",
+        "--------------------------","\n",
+        "p-value: ", round(wl_sign$p.value,4), "\n",
+        "Decision: ", ifelse(wl_sign$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis")
+        )
+)
 ```
+
+> **Two-tailed Wilcoxon signed-rank** and **sign tests** were applied to compare weight loss outcomes between two treatments among $n = 8$ female participants, with $\alpha = 0.05$. Median weight loss was $11.5 \text{ lbs under treatment 1 and }15.0 \text{ lbs under treatment 2 }$. The **Wilcoxon signed-rank test** was **non-significant** $(V = `r wl_wsr$statistic`, p = `r round(wl_wsr$p.value,4)`)$. The sign test yielded only **2 positive** differences and **6 negative** differences, also **non-significant** $(p = `r round(wl_sign$p.value,4)`)$. Both tests fail to reject ${H}_{0}$- there is no statistically significant difference in weight loss between the two treatments, although the descriptive pattern leans in favour of treatment 2.
+
 
 ## FOUR
 
-Twenty participants in an exercise program were measured on the number of sit-ups they could do before physical exercise (first count) and the number they could do after they had done at least 45 minutes of other physical exercise.(second count) `Table 3.13` shows the results for 20 participants obbtained during two separate physical exercise sessions. Determine the **Effect Size** for a calculated z-score
+Twenty participants in an exercise program were measured on the number of sit-ups they could do before physical exercise (first count) and the number they could do after they had done at least 45 minutes of other physical exercise.(second count) `Table 3.13` shows the results for 20 participants obtained during two separate physical exercise sessions. Determine the **Effect Size** for a calculated z-score
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 ex <- data.frame(
@@ -184,10 +236,13 @@ es_ex <- abs(z_ex)/sqrt(n_ex)
 
 cat(paste0("Effect size: ", round(es_ex, 4)))
 ```
+> This constitutes a **medium-to-large effect**, indicating that the exercise session had a practically meaningful impact on sit-up performance. 
 
 ## FIVE
 
 A school is trying to get more students to participate in activities that will make learning more desirable. `Table 3.14` shows the number of activities that each of the 10 students in one class participated in last year before a new activity program was implemented and this year after it was implemented. Construct a 95% confidence interval based on the **Wilcoxon signed-rank test** to determine whether the new activity program had a significant positive effect on the student participation
+
+$${H}_{0}:\text{The new activity program has no effect on student participation} \\ \\ {H}_{1}:\text{The new activity program has a significant positive effect on student participation}$$
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
 activity <- data.frame(
@@ -205,6 +260,8 @@ cat(
   paste0("[",round(act_wsr$conf.int[1],4),",",round(act_wsr$conf.int[2],4),"]")
 )
 ```
+
+> Since the above interval contains zero, we fail to reject ${H}_{0}$— there is insufficient evidence at $\alpha = 0.05$ to conclude that the new activity program had a significant positive effect on student participation.
 
 ## SIX
 
@@ -235,11 +292,45 @@ bacteria <- data.frame(
 
 Use the **Wilcoxon signed-rank test** to assess the evidence for any consistent difference between laboratories for subsamples from the same dairy. Obtain also 95 and 99 percent confidence intervals for the mean and compare these with the intervals using the optimal method when normality is assumed
 
+$${H}_{0}:\text{There is no consisitent difference in bacteria counts between laboratory I and laboratory II}\\ \\ {H}_{1}:\text{There is a consistent difference in bacteria counts between the two laboratories}$$
+
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
-bacteria_wsr <- wilcox.test(x = bacteria$l1, y = bacteria$l2,
+# Two-tailed Wilcoxon signed rank test
+bacteria_wsr1 <- wilcox.test(x = bacteria$l1, y = bacteria$l2,
                           paired = TRUE, exact = FALSE, conf.int = TRUE,
                           alternative = "two.sided", conf.level = c(0.95))
+# 95% confidence interval
+lower_ci95 <- bacteria_wsr1$conf.int[1] |> round(4)
+upper_ci95 <- bacteria_wsr1$conf.int[2] |> round(4)
+
+
+# Two-tailed Wilcoxon signed rank test-[99% confidence interval]
+bacteria_wsr2 <- wilcox.test(x = bacteria$l1, y = bacteria$l2,
+                          paired = TRUE, exact = FALSE, conf.int = TRUE,
+                          alternative = "two.sided", conf.level = c(0.99))
+
+# 99% confidence interval
+lower_ci99 <- bacteria_wsr2$conf.int[1] |> round(2)
+upper_ci99 <- bacteria_wsr2$conf.int[2] |> round(2)
+
+cat(
+  paste0("Two-tailed Wilcoxon signed-rank test","\n",
+        "------------------------------------------------","\n",
+        "p-value: ", round(bacteria_wsr1$p.value,4), "\n",
+        "Decision: ", ifelse(bacteria_wsr1$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"))
+)
+
 ```
+> A **two-tailed Wilcoxon signed-rank** test was conducted to assess whether a consistent difference existed between bacteria counts $(\text{thousands }{ml}^{-1})$ recorded by two laboratories across $n = 10$ dairy subsamples, with $\alpha = 0.05$
+. Median counts were $14.35 \text{ (Lab I) and }13.80\text{ (Lab II) }$. The test was marginally **non-significant** $(V = `r bacteria_wsr1$statistic`, p = `r round(bacteria_wsr1$p.value,4)`)$. We fail to reject ${H}_{0}$- the evidence for a consistent laboratory difference falls just short of the $5\%$ threshold. The **Hodges-Lehmann** estimate of the location shift was $0.450\text{ thousand bacteria } {ml}^{−1}$
+
+-------------------------------
+
+> The nonparametric 95% confidence interval for the difference was $[`r lower_ci95`,`r upper_ci95`]$ and the 99% confidence interval was $[`r lower_ci99`,`r upper_ci99`]$, both straddling zero and consistent with the test decision
+
+
 
 ## SEVEN
 
@@ -267,116 +358,27 @@ lvc <- data.frame(
 )
 ```
 
+$${H}_{0}:\text{There is no difference in examination performance between CAL and lecture-based learning}\\ \\ {H}_{1}:\text{There is a difference in examination performance between the two methods}$$
+
 Analyze these results by what you consider the most appropriate parametric or nonparametric methods to determine whether or not they provide acceptable evidence that CAL materials lead to better examinations results
 
-## EIGHT
-
-*(ANSM 4.11)*
-
-To produce high-quality steel one of two hardening agents A, B may be added to molten metal. Hardness of steel varies from batch to batch, so to test the two agents, batches are sub-divided into two portions, for each batch agent A being added to one portion, agent B to the other. To compare hardness, sharpened specimens for each pair are used to make scratches on each other; that making the deeper scratch on the other is the harder specimen. For a subsample of 10 pairs, an expensive test is used to produce a hardness index. The higher the value of the index, the harder the steel. The indices recorded were:
-
-| batch no. | additive A | additive B |
-|-----------|------------|------------|
-| 1         | 22         | 27         |
-| 2         | 26         | 25         |
-| 3         | 29         | 31         |
-| 4         | 22         | 27         |
-| 5         | 31         | 29         |
-| 6         | 34         | 41         |
-| 7         | 31         | 32         |
-| 8         | 20         | 27         |
-| 9         | 33         | 32         |
-| 10        | 34         | 34         |
-
-```{r,echo = FALSE, message = FALSE, warning = FALSE}
-molten <- data.frame(
-  "batch"=1:10,
-  "A" = c(22,26,29,22,31,34,31,20,33,34),
-  "B" = c(27,25,31,27,29,41,32,27,32,34)
-)
-```
-
-Use an appropriate test to determine whether these data support the initial claim of equal hardness.
-
-```{r, echo = FALSE, warning = FALSE, message = FALSE}
-molten_wsr <- wilcox.test(x = molten$A, y = molten$B,
-                          alternative = "two.sided",exact = FALSE, paired = TRUE)
-```
-
-## NINE
-
-*(ANSM 4.12)*
-
-On the day of the third round of the Open Golf Championship in 1987 before play started a television commentator said that conditions were such that the average scores of players were likely to be at least three higher than those for the second round. For a random sample of 10 of the 77 players participating in both rounds the scores were:
-
-| player | round 2 | round 3 |
-|--------|---------|---------|
-| A      | 73      | 72      |
-| B      | 73      | 79      |
-| C      | 74      | 79      |
-| D      | 66      | 77      |
-| E      | 71      | 83      |
-| F      | 73      | 78      |
-| G      | 68      | 70      |
-| H      | 72      | 78      |
-| I      | 73      | 78      |
-| J      | 72      | 77      |
-
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
-golf <- data.frame(
-  "player" = LETTERS[1:10],
-  "r2" = c(73,73,74,66,71,73,68,72,73,72),
-  "r3" = c(72,79,79,77,83,78,70,78,78,77)
+lvc_wsr <- wilcox.test(x = lvc$CAL,
+                       y = lvc$lectures, paired = TRUE, alternative = "two.sided")
+
+cat(
+  paste0("Two-tailed Wilcoxon signed-rank test","\n",
+        "------------------------------------------------","\n",
+        "p-value: ", round(lvc_wsr$p.value,4), "\n",
+        "Decision: ", ifelse(lvc_wsr$p.value < 0.05,
+                             yes = "Reject the null hypothesis",
+                             no = "Fail to reject the null hypothesis"))
 )
 
 ```
+> A **two-tailed Wilcoxon signed-rank** test was used to compare examination marks (out of 100) between students assigned to computer-assisted learning (CAL) and those assigned to lectures, across $n = 9$ matched pairs, with $\alpha = 0.05$
+. Median marks were $73\text{ (CAL) and }38\text{ (lectures) }$. Of the $9$ pairs, $6$ showed higher marks under CAL and $3$ under lectures. Despite this descriptive advantage, the test was **non-significant** $(V = `r lvc_wsr$statistic`, p = `r round(lvc_wsr$p.value,4)`)$. We fail to reject ${H}_{0}$— there is insufficient evidence at the $5\%$ level to conclude that CAL and lecture-based learning produce different examination outcomes.
 
-Do these data support the commentator’s claim? Consider carefully whether a one- or two-tail test is appropriate
-
-## TEN
-
-*(ANSM 4.13)*
-
-Pearson and Sprent (1968) gave data for hearing loss (in decibels below prescribed norms) at various frequencies. The data below show these losses for $10$ individuals aged between 46 and $54$ at frequencies of $0.125$ and $0.25\ kcs^-1$. A negative loss indicates hearing above the norm. Is there an indication of a different loss at the two frequencies
-
-| subject | $0.125\ kcs^-1$ | $0.25\ kcs^-1$ |
-|---------|-----------------|----------------|
-| A       | 2.5             | 2.5            |
-| B       | -7.5            | -5             |
-| C       | 11.25           | 6.35           |
-| D       | 7.5             | 6.25           |
-| E       | 10              | 7.5            |
-| F       | 5               | 3.75           |
-| G       | 7.5             | 1.25           |
-| H       | 2.5             | 0              |
-| I       | 5               | 2.5            |
-| J       | 8.75            | 5              |
-
-## ELEVEN
-
-*(ANSM 4.15)*
-
-Scott, Smith and Jones (1977) give a table of estimates of the percentages of UK electors predicted to vote Conservative by two opinion polling organizations, A and B, in each month in the years 1965–70. For a random sample of 15 months during that period the paired percentages were:
-
-| A    | B    |
-|------|------|
-| 43.5 | 45.5 |
-| 51.2 | 44.5 |
-| 46.8 | 45   |
-| 55.5 | 54.5 |
-| 45.5 | 49.5 |
-| 42   | 43.5 |
-| 36   | 41   |
-| 49.8 | 53   |
-| 42.5 | 48   |
-| 50.8 | 52.5 |
-| 36.6 | 41   |
-| 47.6 | 47.5 |
-| 41.9 | 42.5 |
-| 48.4 | 45   |
-| 53.5 | 52.5 |
-
-Do these results indicate a significant tendency for one of the organizations to return higher percentages than the other? Obtain an appropriate 95 percent confidence interval for any mean or median difference between predictions during the period covered
 
 ------------------------------------------------------------------------
 
@@ -418,6 +420,9 @@ fg_mw <- wilcox.test(x = firstgrade$score[firstgrade$method=="ono"],
                      y = firstgrade$score[firstgrade$method=="sg"],
                      alternative = "two.sided", paired = FALSE)
 ```
+
+
+$${H}_{0}:\text{}\\ \\ {H}_{1}:\text{}$$
 
 ### b
 
@@ -1446,19 +1451,19 @@ cat(
   paste0("Bonferroni-Mann-Whitney U test (very attractive vs average)","\n",
          "------------------------------------------------------------","\n",
          "p-value: ", round(attraction_mw1$p.value, 4), "\n",
-         "Decision: ", ifelse(attraction_mw1$p.value<bonferroni_pvalue,
+         "Decision: ", ifelse(attraction_mw1$p.value < bonferroni_pvalue,
                               yes = "Reject the null hypothesis",
                               no = "Fail to reject the null hypothesis"),"\n","\n",
          "Bonferroni-Mann-Whitney U test (very attractive vs very unattractive)","\n",
          "---------------------------------------------------------------------","\n",
          "p-value: ", round(attraction_mw2$p.value, 4), "\n",
-         "Decision: ", ifelse(attraction_mw2$p.value<bonferroni_pvalue,
+         "Decision: ", ifelse(attraction_mw2$p.value < bonferroni_pvalue,
                               yes = "Reject the null hypothesis",
                               no = "Fail to reject the null hypothesis"),"\n","\n",
          "Bonferroni-Mann-Whitney U test (average vs very unattractive)","\n",
          "-------------------------------------------------------------","\n",
          "p-value: ", round(attraction_mw3$p.value, 4), "\n",
-         "Decision: ", ifelse(attraction_mw3$p.value<bonferroni_pvalue,
+         "Decision: ", ifelse(attraction_mw3$p.value < bonferroni_pvalue,
                               yes = "Reject the null hypothesis",
                               no = "Fail to reject the null hypothesis"))
 )

@@ -40,7 +40,7 @@ STACK
 SELECT OUTPUT [Assignments/Scripts]
 ---------------
   View project on RPubs:
-  https://rpubs.com/bugameG
+  [NPM_Problems](https://rpubs.com/pamba_/applied-nonparametrics)
 ```
 
 ---

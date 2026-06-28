@@ -39,7 +39,7 @@ STACK
 ```
 SELECT OUTPUT [Assignments/Scripts]
 ---------------
-  View project on RPubs:
+  View project on RPubs: 
 ```
 [NPM_Problems](https://rpubs.com/pamba_/applied-nonparametrics)
 

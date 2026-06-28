@@ -37,7 +37,7 @@ STACK
 ---
 
 ```
-SELECT OUTPUT 
+SELECT OUTPUT [Assignments/Scripts]
 ---------------
   View project on RPubs:
   https://rpubs.com/bugameG

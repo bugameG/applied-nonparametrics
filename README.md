@@ -37,7 +37,7 @@ STACK
 ---
 
 ```
-RENDERED OUTPUT
+SELECT OUTPUT 
 ---------------
   View project on RPubs:
   https://rpubs.com/bugameG

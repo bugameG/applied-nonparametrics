@@ -36,11 +36,12 @@ STACK
 
 ---
 
-
+```
 SELECT OUTPUT [Assignments/Scripts]
 ---------------
   View project on RPubs:
-  [NPM_Problems](https://rpubs.com/pamba_/applied-nonparametrics)
+```
+[NPM_Problems](https://rpubs.com/pamba_/applied-nonparametrics)
 
 
 ---
@@ -49,5 +50,6 @@ SELECT OUTPUT [Assignments/Scripts]
 ============================================================
   "In God we trust; all others must bring data."
                                     -- W. Edwards Deming
+
 ============================================================
 ```
